@@ -11,7 +11,7 @@ function IntroQuestion() {
   const handleSubmit = () => {
     if (selectedAnswer) {
       //TODO: Use answer to trigger corresponding Pipeline
-      console.log('User selected:', selectedOption);
+      console.log('User selected:', selectedAnswer);
     }
   };
   
