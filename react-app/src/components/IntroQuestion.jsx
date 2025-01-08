@@ -2,7 +2,11 @@ import { useState } from 'react'
 import './IntroQuestion.css'
 
 function IntroQuestion() {
-  const [count, setCount] = useState(0)
+  const [selectedAnswer, setSelectedAnswer] = useState(null)
+
+  const handleAnswerChange = (event) => {
+    setSelectedAnswer(event.target.value);
+  };
 
   return (
     <>
@@ -13,3 +17,4 @@ function IntroQuestion() {
 }
 
 export default IntroQuestion
+
