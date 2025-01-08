@@ -1,0 +1,15 @@
+{
+  "name": "Retain",
+  "description": "Retain enhances your learning by supporting active recall through intelligent question generation for YouTube videos. Users can choose to be prompted with questions during the video, after it, or both, helping to reinforce key concepts and improve memory retention.",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": ["https://www.youtube.com/*"],
+  "action": {
+    "default_icon": "assets/extension_icon.png", 
+    "default_title": "Activate Retain"
+  }
+}
+
+
+  
