@@ -1,0 +1,18 @@
+/* Button styling */
+.submit-button {
+  color: white;
+  background-color: #4caf50; /* Green background */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #45a049; /* Slightly darker green on hover */
+}
+
+.submit-button:disabled {
+  background-color: #cccccc; /* Gray when disabled */
+  cursor: not-allowed; /* Change cursor to indicate disabled */
+}

@@ -38,7 +38,11 @@ function IntroQuestion() {
         </div>
       ))}
 
-      <button onClick={handleSubmit} disabled={!selectedAnswer}>
+      <button
+        className="submit-button"
+        onClick={handleSubmit}
+        disabled={!selectedAnswer}
+      >
         Submit
       </button>
     </div>
