@@ -4,6 +4,7 @@ import RadioAnswer from "./RadioAnswer.jsx";
 
 function IntroQuestion() {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [isVisible, setIsVisible] = useState(true);
 
   const handleAnswerChange = (event) => {
     setSelectedAnswer(event.target.value);
@@ -12,7 +13,7 @@ function IntroQuestion() {
   const handleSubmit = () => {
     if (selectedAnswer) {
       console.log("User selected:", selectedAnswer);
-      //TODO: Use answer to trigger corresponding Pipeline
+      setIsVisible(false);
     }
   };
 
@@ -21,6 +22,10 @@ function IntroQuestion() {
     { value: "End", label: "At the end of the video" },
     { value: "Both", label: "Both" },
   ];
+
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <div>
