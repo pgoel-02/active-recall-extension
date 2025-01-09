@@ -11,8 +11,8 @@ function IntroQuestion() {
 
   const handleSubmit = () => {
     if (selectedAnswer) {
-      //TODO: Use answer to trigger corresponding Pipeline
       console.log("User selected:", selectedAnswer);
+      //TODO: Use answer to trigger corresponding Pipeline
     }
   };
 
@@ -37,7 +37,10 @@ function IntroQuestion() {
           <br />
         </div>
       ))}
-      <p>Your selection: {selectedAnswer}</p>
+
+      <button onClick={handleSubmit} disabled={!selectedAnswer}>
+        Submit
+      </button>
     </div>
   );
 }
