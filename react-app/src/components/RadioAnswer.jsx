@@ -1,12 +1,13 @@
 import React from 'react';
 
-const RadioAnswer = ({ value, label, name, onChange }) => (
+const RadioAnswer = ({ value, label, name, onChange, checked }) => (
   <label>
     <input
       type="radio"
       value={value}
-      name = {name}
+      name={name}
       onChange={onChange}
+      checked={checked}
     />
     {label}
   </label>
