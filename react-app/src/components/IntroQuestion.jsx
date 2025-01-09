@@ -30,7 +30,9 @@ function IntroQuestion() {
           <RadioAnswer
             value={answer.value}
             label={answer.label}
+            name="initialPrompt"
             onChange={handleAnswerChange}
+            checked={selectedAnswer === answer.value}
           />
           <br />
         </div>
