@@ -1,0 +1,11 @@
+const iframe = document.createElement("iframe");
+iframe.src = "http://localhost:5173";
+iframe.style.position = "fixed";
+iframe.style.top = "0";
+iframe.style.left = "75%";
+iframe.style.transform = "translateX(-50%)";
+iframe.style.width = "34%";
+iframe.style.height = "25%";
+iframe.style.zIndex = "999999";
+iframe.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.5)";
+document.body.appendChild(iframe);
