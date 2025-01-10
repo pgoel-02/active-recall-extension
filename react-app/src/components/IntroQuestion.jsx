@@ -28,7 +28,7 @@ function IntroQuestion() {
   }
 
   return (
-    <div>
+    <div className="initial-prompt">
       <h1>When would you like Retain to ask you questions about the video?</h1>
       {answers.map((answer) => (
         <div key={answer.value}>
