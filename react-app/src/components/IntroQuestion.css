@@ -1,7 +1,7 @@
 /* Button styling */
 .submit-button {
   color: white;
-  background-color: #4caf50; /* Green background */
+  background-color: #339937;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -9,10 +9,22 @@
 }
 
 .submit-button:hover {
-  background-color: #45a049; /* Slightly darker green on hover */
+  background-color: #45a049;
 }
 
 .submit-button:disabled {
-  background-color: #cccccc; /* Gray when disabled */
-  cursor: not-allowed; /* Change cursor to indicate disabled */
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.initial-prompt {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transform: scale(0.7);
+  transform-origin: top center;
+  overflow: hidden;
 }
