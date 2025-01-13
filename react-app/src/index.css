@@ -5,10 +5,8 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: rgb(46, 47, 47);
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -22,6 +20,9 @@ body {
 }
 
 h1 {
-  /* font-size: 3.2em;*/
+  font-size: 1.2rem;
   line-height: 1.1;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 10px 0;
 }
