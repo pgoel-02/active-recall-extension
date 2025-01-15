@@ -13,8 +13,8 @@ def get_absolute_path(file_name):
     str: The absolute file path with a '.mp3' extension.
 
     Example:
-    >>> get_absolute_path('example.webm')
-    '/absolute/path/to/example.mp3'
+    >>> get_absolute_path('example_video.webm')
+    '/absolute/path/to/example_video.mp3'
     """
     file_name = (file_name.split("."))[:-1]
     file_name = '.'.join(file_name) + ".mp3"
@@ -69,8 +69,8 @@ def transcribe(absolute_path_to_file):
     str: The transcription of the audio file in English as a plain text string.
     
     Example:
-    >>> transcribe('/absolute/path/to/example.mp3')
-    'This is the transcription of this audio file.'
+    >>> transcribe('/absolute/path/to/example_video.mp3')
+    'This is the transcription of the audio file.'
     """
     client = OpenAI()
     with open(absolute_path_to_file, "rb") as audio_file:
@@ -92,8 +92,8 @@ def delete_file(absolute_path_to_file):
     bool: True if the file was successfully deleted, False if an error occurred.
     
     Example:
-    >>> transcribe('/absolute/path/to/example.mp3')
-    'This is the transcription of this audio file.'
+    >>> delete_file('/absolute/path/to/example_video.mp3')
+    True
     """
     try:
         os.remove(absolute_path_to_file)
