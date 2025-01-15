@@ -80,3 +80,35 @@ def transcribe(absolute_path_to_file):
             response_format="text"
         )
     return transcription
+
+def delete_file(absolute_path_to_file):
+    """
+    Deletes a file at the specified file path.
+    
+    Args:
+    absolute_path_to_file (str): The absolute path to the file that will be deleted.
+
+    Returns:
+    bool: True if the file was successfully deleted, False if an error occurred.
+    
+    Example:
+    >>> transcribe('/absolute/path/to/example.mp3')
+    'This is the transcription of this audio file.'
+    """
+    try:
+        os.remove(absolute_path_to_file)
+        return True
+    except FileNotFoundError:
+        print(f"File not found: {absolute_path_to_file}")
+        return False
+    except PermissionError:
+        print(f"Permission denied: {absolute_path_to_file}")
+        return False
+    except Exception as e:
+        print(f"Error deleting file {absolute_path_to_file}: {e}")
+        return False
+
+
+
+
+    
