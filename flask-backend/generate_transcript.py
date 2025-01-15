@@ -81,6 +81,10 @@ def check_file_size(absolute_path_to_file, threshold=25):
 
     Returns:
     bool: True if the file size is within the limit, False if the file is above the limit, and None if an error occurred.
+
+    Example:
+    >>> check_file_size('/absolute/path/to/example_video.mp3')
+    True
     """
     try:
         file_size_bytes = os.path.getsize(absolute_path_to_file)
