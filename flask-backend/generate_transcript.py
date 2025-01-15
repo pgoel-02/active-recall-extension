@@ -21,7 +21,7 @@ def get_absolute_path(file_name):
             raise ValueError("The file name must not be an empty string.")
         if '.' not in file_name:
             raise ValueError("The file name must include its extension.")
-        
+
         file_name = (file_name.split("."))[:-1]
         file_name = '.'.join(file_name) + ".mp3"
         return os.path.abspath(file_name)
@@ -70,7 +70,32 @@ def download_audio(youtube_url):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         return None
-    
+
+def check_file_size(absolute_path_to_file, threshold=25):
+    """
+    Checks if the file size is less than a threshold, given in MB
+
+    Args:
+    absolute_path_to_file (str): The absolute path to the file. 
+    threshold (int): The maximum allowed file size in MB (exclusive). Defaults to 25 MB.
+
+    Returns:
+    bool: True if the file size is within the limit, False if the file is above the limit, and None if an error occurred.
+    """
+    try:
+        file_size_bytes = os.path.getsize(absolute_path_to_file)
+        return file_size_bytes < (threshold * 1024 * 1024)
+    except FileNotFoundError:
+        print(f"File not found: {absolute_path_to_file}")
+        return None
+    except PermissionError:
+        print(f"Permission denied: {absolute_path_to_file}")
+        return None
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return None
+
+
 def transcribe(absolute_path_to_file):
     """
     Transcribes an audio file to text in English using OpenAI's Whisper model.
