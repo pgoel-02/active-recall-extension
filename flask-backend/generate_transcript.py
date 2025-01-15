@@ -66,20 +66,31 @@ def transcribe(absolute_path_to_file):
     absolute_path_to_file (str): The absolute path to an mp3 file that will be transcribed. 
 
     Returns:
-    str: The transcription of the audio file in English as a plain text string.
+    str: The transcription of the audio file in English as a plain text string, None if an error occurred.
     
     Example:
     >>> transcribe('/absolute/path/to/example_video.mp3')
     'This is the transcription of the audio file.'
     """
     client = OpenAI()
-    with open(absolute_path_to_file, "rb") as audio_file:
-        transcription = client.audio.transcriptions.create(
-            model="whisper-1", 
-            file=audio_file, 
-            response_format="text"
-        )
-    return transcription
+    try:
+        with open(absolute_path_to_file, "rb") as audio_file:
+            transcription = client.audio.transcriptions.create(
+                model="whisper-1", 
+                file=audio_file, 
+                response_format="text"
+            )
+        return transcription
+    except FileNotFoundError:
+        print(f"File not found: {absolute_path_to_file}")
+        return None
+    except PermissionError:
+        print(f"Permission denied: {absolute_path_to_file}")
+        return None
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return None
+
 
 def delete_file(absolute_path_to_file):
     """
@@ -107,8 +118,4 @@ def delete_file(absolute_path_to_file):
     except Exception as e:
         print(f"Error deleting file {absolute_path_to_file}: {e}")
         return False
-
-
-
-
     
