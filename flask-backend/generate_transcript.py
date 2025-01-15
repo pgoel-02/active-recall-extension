@@ -1,6 +1,7 @@
-import yt_dlp
 import os
+import yt_dlp
 from openai import OpenAI
+from pydub import AudioSegment
 
 def get_absolute_path(file_name):
     """
@@ -100,6 +101,38 @@ def check_file_size(absolute_path_to_file, threshold=25):
         return None
 
 
+def split_audio(absolute_path_to_file, chunk_duration_ms=24*60*1000, overlap_duration_ms=30*1000):
+    """
+    Splits an audio file into chunks with specified duration and overlap. 
+
+    Args:
+    absolute_path_to_file (str): Path to the input audio file.
+    chunk_duration_ms (int): Duration of each chunk in milliseconds. Defaults to 24 minutes.
+    overlap_duration_ms (int): Duration of overlap between chunks in milliseconds. Defaults to 30 seconds.
+
+    Returns:
+    List of absolute paths to the saved chunk files.
+
+    Example:
+    >>> split_audio('/absolute/path/to/example_video.mp3')
+    ['/absolute/path/to/chunk_1.mp3', '/absolute/path/to/chunk_2.mp3', '/absolute/path/to/chunk_3.mp3']
+    """
+    audio = AudioSegment.from_mp3(absolute_path_to_file)
+    video_length_ms = len(audio)
+    num_chunks = video_length_ms // chunk_duration_ms + (1 if video_length_ms % chunk_duration_ms else 0)
+    
+    output_files = []
+    for i in range(num_chunks):
+        start_time = i * (chunk_duration_ms - overlap_duration_ms)
+        end_time = start_time + chunk_duration_ms if start_time + chunk_duration_ms <= video_length_ms else video_length_ms
+        chunk = audio[start_time:end_time]
+        
+        output_file = f"chunk_{i+1}.mp3"
+        chunk.export(output_file, format="mp3")
+        output_files.append(get_absolute_path(output_file))
+    
+    return output_files
+
 def transcribe(absolute_path_to_file):
     """
     Transcribes an audio file to text in English using OpenAI's Whisper model.
@@ -160,3 +193,4 @@ def delete_file(absolute_path_to_file):
     except Exception as e:
         print(f"Error deleting file {absolute_path_to_file}: {e}")
         return False
+
