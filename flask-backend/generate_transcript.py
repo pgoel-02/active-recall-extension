@@ -10,15 +10,28 @@ def get_absolute_path(file_name):
     file_name (str): The name of the file, including its extension.
 
     Returns:
-    str: The absolute file path with a '.mp3' extension.
+    str: The absolute file path with a '.mp3' extension, or None if an error occurred.
 
     Example:
     >>> get_absolute_path('example_video.webm')
     '/absolute/path/to/example_video.mp3'
     """
-    file_name = (file_name.split("."))[:-1]
-    file_name = '.'.join(file_name) + ".mp3"
-    return os.path.abspath(file_name)
+    try:
+        if not file_name:
+            raise ValueError("The file name must not be an empty string.")
+        if '.' not in file_name:
+            raise ValueError("The file name must include its extension.")
+        
+        file_name = (file_name.split("."))[:-1]
+        file_name = '.'.join(file_name) + ".mp3"
+        return os.path.abspath(file_name)
+    except ValueError as e:
+        print(f"Error: {e}")
+        return None
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return None
+        
 
 def download_audio(youtube_url):
     """
@@ -28,7 +41,7 @@ def download_audio(youtube_url):
     youtube_url (str): The URL of the YouTube video from which to download the audio.
 
     Returns:
-    str: The absolute file path of the downloaded mp3 audio file, or None if an error occurs.
+    str: The absolute file path of the downloaded mp3 audio file, or None if an error occurred.
 
     Exceptions:
     yt_dlp.DownloadError: For any errors that occur during the download process.
@@ -66,7 +79,7 @@ def transcribe(absolute_path_to_file):
     absolute_path_to_file (str): The absolute path to an mp3 file that will be transcribed. 
 
     Returns:
-    str: The transcription of the audio file in English as a plain text string, None if an error occurred.
+    str: The transcription of the audio file in English as a plain text string, or None if an error occurred.
     
     Example:
     >>> transcribe('/absolute/path/to/example_video.mp3')
@@ -118,4 +131,3 @@ def delete_file(absolute_path_to_file):
     except Exception as e:
         print(f"Error deleting file {absolute_path_to_file}: {e}")
         return False
-    
