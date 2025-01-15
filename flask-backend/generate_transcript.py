@@ -166,6 +166,29 @@ def transcribe(absolute_path_to_file):
         print(f"An unexpected error occurred: {e}")
         return None
 
+def transcribe_multiple(list_of_paths):
+    """
+    Transcribes multiple audio files and returns the concatenated transcriptions.
+    
+    Args:
+    list_of_paths (list of str): A list of absolute file paths to audio files to be transcribed.
+
+    Returns:
+    str: A concatenated string containing the transcriptions of all valid audio files, separated by newlines. 
+    An empty string is returned if no valid transcriptions are found
+    
+    Example:
+    >>> transcribe_multiple(['/absolute/path/to/chunk_1.mp3', '/absolute/path/to/chunk_2.mp3'])
+    'Transcription of file1. Transcription of file2'
+    """
+    transcription = ""
+    
+    for path in list_of_paths:
+        transcribed_text = transcribe(path)
+        if transcribed_text is not None:
+            transcription += transcribed_text + " "
+
+    return transcription
 
 def delete_file(absolute_path_to_file):
     """
