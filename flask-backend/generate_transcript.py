@@ -175,7 +175,7 @@ def transcribe_multiple(list_of_paths):
 
     Returns:
     str: A concatenated string containing the transcriptions of all valid audio files, separated by newlines. 
-    An empty string is returned if no valid transcriptions are found
+    An empty string is returned if no valid transcriptions are found.
     
     Example:
     >>> transcribe_multiple(['/absolute/path/to/chunk_1.mp3', '/absolute/path/to/chunk_2.mp3'])
@@ -185,7 +185,7 @@ def transcribe_multiple(list_of_paths):
     
     for path in list_of_paths:
         transcribed_text = transcribe(path)
-        if transcribed_text is not None:
+        if transcribed_text:
             transcription += transcribed_text + " "
 
     return transcription
