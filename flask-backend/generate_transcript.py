@@ -1,4 +1,5 @@
 import os
+import psycopg2
 import yt_dlp
 from openai import OpenAI
 from pydub import AudioSegment
@@ -188,7 +189,7 @@ def transcribe_multiple(list_of_paths):
         if transcribed_text:
             transcription += transcribed_text + " "
 
-    return transcription
+    return transcription if transcription != "" else None
 
 def delete_file(absolute_path_to_file):
     """
@@ -196,24 +197,102 @@ def delete_file(absolute_path_to_file):
     
     Args:
     absolute_path_to_file (str): The absolute path to the file that will be deleted.
-
-    Returns:
-    bool: True if the file was successfully deleted, False if an error occurred.
-    
-    Example:
-    >>> delete_file('/absolute/path/to/example_video.mp3')
-    True
     """
     try:
         os.remove(absolute_path_to_file)
-        return True
     except FileNotFoundError:
         print(f"File not found: {absolute_path_to_file}")
-        return False
     except PermissionError:
         print(f"Permission denied: {absolute_path_to_file}")
-        return False
     except Exception as e:
         print(f"Error deleting file {absolute_path_to_file}: {e}")
-        return False
 
+def get_db_connection(db):
+    """
+    Establishes and returns a connection to the PostgreSQL database.
+
+    Args:
+    db (str): The name of the PostgreSQL database.
+    """
+    user = os.getenv("PGUSER")
+    return psycopg2.connect(
+        dbname=db,  
+        user=user,              
+        host="localhost",             
+        port="5432"                    
+    )
+
+def process_video_transcription(youtube_video_url):
+    """
+    Downloads a YouTube video's audio and returns a transcription of this audio file. 
+    
+    Directly transcribes the audio if the file size is below the default threshold of 25 MB (which is the limit for Whisper).
+    Splits the audio into smaller chunks, transcribes each chunk, and returns a concatenation of these transcriptions if the file size is above the default threshold. 
+
+    Deletes any audio files downloaded after creating transcription. 
+
+    Args:
+    youtube_video_url (str): The URL of the YouTube video to be processed.
+
+    Returns:
+    str: The transcription of the video, or None if a transcription could not be made. 
+
+    Example:
+    >>> process_video_transcription('https://www.youtube.com/watch?v=example_video')
+    'This is the transcription of the given video.'
+    """
+    path = download_audio(youtube_video_url)
+    if not path: return None
+
+    file_size = check_file_size(path)
+    if file_size == None: return None
+
+    if file_size:
+        transcription = transcribe(path)
+        delete_file(path)
+    else:
+        audio_file_chunks = split_audio(path)
+        transcription = transcribe_multiple(audio_file_chunks)
+        for chunk in audio_file_chunks:
+            delete_file(chunk)
+    return transcription
+
+
+def get_transcript(youtube_video_id, youtube_video_url):
+    """
+    Retrieves the transcript for a given YouTube video ID. 
+
+    If the transcript exists in the PostgreSQL 'youtube_transcripts' database, it is fetched and returned. 
+    If not, the function processes the video to generate a transcript, stores it in the database, and then returns the newly generated transcript.
+
+    Args:
+        youtube_video_id (str): The unique identifier of the YouTube video.
+        youtube_video_url (str): The URL of the YouTube video.
+
+    Returns:
+        str or None: The transcript of the video if successful. If an exception occurs, it logs the error message and returns None.
+
+    Example:
+    >>> get_transcript('example_video', 'https://www.youtube.com/watch?v=example_video')
+    'This is the transcription of the given video.'
+    """
+    connection = get_db_connection("youtube_transcripts")
+    cursor = connection.cursor()
+    
+    try:
+        cursor.execute("SELECT transcript FROM videos WHERE youtube_video_id = %s", (youtube_video_id,))
+        transcript = cursor.fetchone()
+        if transcript:
+            return transcript[0] 
+        else:
+            transcript = process_video_transcription(youtube_video_url)
+            cursor.execute("INSERT INTO videos (youtube_video_id, transcript) VALUES (%s, %s)", 
+                           (youtube_video_id, transcript))
+            connection.commit() 
+            return transcript
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
