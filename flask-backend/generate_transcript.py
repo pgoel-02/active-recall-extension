@@ -349,11 +349,10 @@ def get_transcript(youtube_video_id, youtube_video_url, before):
     before (bool): A value of True indicates that we should present questions at the end of the video, while False represents questions throughout or both. 
 
     Returns:
-    str or None: The transcript of the video if successful. If an exception occurs, it logs the error message and returns None.
-
-    Example:
-    >>> get_transcript('example_video', 'https://www.youtube.com/watch?v=example_video')
-    'This is the transcription of the given video.'
+    if before is True: 
+        str: The transcription of the video without timestamps, or None if a transcription could not be made. 
+    if before is False: 
+        List of str: A list of JSON-formatted strings, each representing a transcription segment with timestamps. 
     """
     connection = get_db_connection("youtube_transcripts")
     cursor = connection.cursor()
@@ -365,9 +364,10 @@ def get_transcript(youtube_video_id, youtube_video_url, before):
         if transcript:
             return transcript[0] 
         else:
-            transcript = process_video_transcription(youtube_video_url)
-            cursor.execute("INSERT INTO videos (youtube_video_id, transcript) VALUES (%s, %s)", 
-                           (youtube_video_id, transcript))
+            transcript = process_video_transcription(youtube_video_url, before)
+            column = "transcript" if before else "timed_transcript"
+            cursor.execute(f"INSERT INTO videos (youtube_video_id, {column}) VALUES (%s, %s)", 
+                           (youtube_video_id, transcript if before else [transcript]))
             connection.commit() 
             return transcript
     except Exception as e:
