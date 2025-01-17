@@ -191,6 +191,27 @@ def transcribe_multiple(list_of_paths):
 
     return transcription if transcription != "" else None
 
+def transcribe_with_timestamps(absolute_path_to_file):
+    """
+    Transcribes an audio file to text with corresponding timestamps at the segment level in English using OpenAI's Whisper model. 
+    Each segment is returned as an object defined by OpenAI.
+    
+    Args:
+    absolute_path_to_file (str): The absolute path to an mp3 file that will be transcribed. 
+
+    Returns:
+    list of TranscriptionSegment objects: A list of transcription segments, each containing the transcribed text and its corresponding timestamp.
+    """
+    client = OpenAI()
+    with open(absolute_path_to_file, "rb") as audio_file:
+        transcription = client.audio.transcriptions.create(
+            model="whisper-1", 
+            file=audio_file, 
+            response_format="verbose_json",
+            timestamp_granularities=["segment"]
+        )
+        return transcription.segments  
+
 def delete_file(absolute_path_to_file):
     """
     Deletes a file at the specified file path.
