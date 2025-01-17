@@ -4,14 +4,14 @@ client = OpenAI()
 
 def summarize_text(transcript, max_extractions = 15):
     """
-    Extracts key points from a given text transcript. The number of points will be between 1 - max_extractions.
+    Extracts key points from a given text transcript using GPT-4o. The number of points will be between 1 - max_extractions.
 
     Args:
     transcript (str): The transcription of a video as text.
     max_extractions (int): The maximum number of points that the model can extract from the video. Defaults to 15. 
     
     Returns:
-    str: A 
+    str: A string containing a Python-style list of key points extracted. 
 
     Example:
     >>> summarize_text('This is our transcript...')
@@ -22,7 +22,8 @@ def summarize_text(transcript, max_extractions = 15):
         messages=[
             {"role": "developer", "content": "You are an experienced educator. Your task is to carefully review text transcripts of educational videos or lectures and extract the most important facts, points, or takeaways. Focus on what students need to learn or remember for better understanding and retention."},
             {"role": "user", "content": f"Here is a transcript from a video.:\n\n{transcript}\n\n Please extract the most important points from the transcript and return them as a Python list, without any additional text. Please return at least one point and at most {max_extractions} points."}
-        ]
+        ], 
+        response_format={ "type": "json_object" }
     )
     return completion.choices[0].message.content
 
@@ -45,4 +46,74 @@ def format_as_list(key_points):
     key_points = key_points.group(0)
     return eval(key_points)
 
+def format_as_dict(key_points):
+    """
+    Uses regular expressions to extract a Python dictionary from a string that contains additional text or comments. 
+
+    Parameters:
+    key_points (str): A string that contains a Python-style dictionary, potentially with additional text or comments.
+
+    Returns:
+    dict: The extracted Python dictionary.
+
+    Example:
+    >>> example_dict = "Some text before the dictionary: {"key1":"value", "key2", "value"} and after."
+    >>> format_as_dict(example_dict)
+    {"key1":"value", "key2", "value"}
+    """
+    key_points = re.search(r'\{.*\}', key_points, re.DOTALL)
+    key_points = key_points.group(0)
+    return eval(key_points)
+
+
+def generate_question_with_gpt4(main_point):
+    """
+    Generates a multiple-choice question from a given main point using GPT-4o.
+    
+    Args:
+    main_point (str): The main point to generate the question from.
+    
+    Returns:
+    str: A string containing a Python-style dictionary with the question, correct answer, and distractors.
+
+    Example:
+    >>> generate_question_with_gpt4('The four pillars of OOP are abstraction, polymorphism, inheritance, and encapsulation.')
+    ```python
+    {
+        question: "Which of the following is not one of the four pillars of Object-Oriented Programming (OOP)?",
+        options: [
+            "Abstraction", 
+            "Encapsulation", 
+            "Polymorphism", 
+            "Concurrency"
+        ],
+        correct_answer: "Concurrency"
+    }
+    ```
+    """
+
+    prompt = f"""
+    Generate a multiple-choice question based on the following point:
+    "{main_point}"
+
+    The question should include:
+    1. A clear question.
+    2. Four options, where one is the correct answer and the other three are believable distractors. Please keep options concise.
+    3. Indicate which option is correct. The correct option should be based on the given point. 
+    4. Please do not assign numbers or letters to each option. 
+
+    Return the result in a Python dictionary with the following key-value pairs: 
+    question: "Your question text here",
+    options: ["Option A", "Option B", "Option C", "Option D"], 
+    correct_answer: "Option A"
+    """
+
+    completion = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": "You are an experienced educator generating educational questions."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+    return completion.choices[0].message.content
 
