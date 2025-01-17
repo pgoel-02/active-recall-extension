@@ -238,7 +238,34 @@ def transcribe_with_timestamps(absolute_path_to_file):
             timestamp_granularities=["segment"]
         )
         return transcription.segments  
+
+
+def transcribe_multiple_audio_with_timestamps(list_of_paths):
+    """
+    Transcribes multiple audio files and returns the concatenated transcriptions with timestamps. 
     
+    Args:
+    list_of_paths (list of str): A list of absolute file paths to audio files to be transcribed.
+
+    Returns:
+    List of str: A list of JSON-formatted strings, each representing a transcription segment. 
+    An empty list is returned if no valid transcriptions are found. Each string has the following structure:
+        {
+        "start": "Starting time in seconds",
+        "end": "Ending time in seconds",
+        "text": "Transcribed text"
+    }
+    """
+    transcription = []
+    
+    for path in list_of_paths:
+        transcribed_text = transcribe_with_timestamps(path)
+        if transcribed_text:
+            transcription.append(format_timestamps(transcribed_text))
+    
+    transcription = [json_string for sublist in transcription for json_string in sublist]
+    return transcription if len(transcription) > 0 else None
+
 
 def delete_file(absolute_path_to_file):
     """
