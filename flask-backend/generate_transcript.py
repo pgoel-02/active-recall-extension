@@ -73,7 +73,7 @@ def download_audio(youtube_url):
         print(f"An unexpected error occurred: {e}")
         return None
 
-def check_file_size(absolute_path_to_file, threshold=25):
+def check_file_size(absolute_path_to_file, threshold = 25):
     """
     Checks if the file size is less than a threshold, given in MB
 
@@ -102,7 +102,7 @@ def check_file_size(absolute_path_to_file, threshold=25):
         return None
 
 
-def split_audio(absolute_path_to_file, chunk_duration_ms=24*60*1000, overlap_duration_ms=30*1000):
+def split_audio(absolute_path_to_file, chunk_duration_ms = 24*60*1000, overlap_duration_ms = 30*1000):
     """
     Splits an audio file into chunks with specified duration and overlap. 
 
@@ -266,11 +266,11 @@ def get_transcript(youtube_video_id, youtube_video_url):
     If not, the function processes the video to generate a transcript, stores it in the database, and then returns the newly generated transcript.
 
     Args:
-        youtube_video_id (str): The unique identifier of the YouTube video.
-        youtube_video_url (str): The URL of the YouTube video.
+    youtube_video_id (str): The unique identifier of the YouTube video.
+    youtube_video_url (str): The URL of the YouTube video.
 
     Returns:
-        str or None: The transcript of the video if successful. If an exception occurs, it logs the error message and returns None.
+    str or None: The transcript of the video if successful. If an exception occurs, it logs the error message and returns None.
 
     Example:
     >>> get_transcript('example_video', 'https://www.youtube.com/watch?v=example_video')
@@ -296,3 +296,6 @@ def get_transcript(youtube_video_id, youtube_video_url):
     finally:
         cursor.close()
         connection.close()
+
+
+
