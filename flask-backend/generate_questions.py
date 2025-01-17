@@ -1,3 +1,4 @@
+import re
 from openai import OpenAI
 client = OpenAI()
 
@@ -24,5 +25,24 @@ def summarize_text(transcript, max_extractions = 15):
         ]
     )
     return completion.choices[0].message.content
+
+def format_as_list(key_points):
+    """
+    Uses regular expressions to extract a Python list from a string that contains additional text or comments. 
+
+    Parameters:
+    key_points (str): A string that contains a Python-style list, potentially with additional text or comments.
+
+    Returns:
+    list: The extracted Python list.
+
+    Example:
+    >>> example_string = "Some text before the list: [1, 2, 3, 'a', 'b', 'c'] and after."
+    >>> format_as_list(example_string)
+    [1, 2, 3, 'a', 'b', 'c']
+    """
+    key_points = re.search(r'\[.*\]', key_points, re.DOTALL)
+    key_points = key_points.group(0)
+    return eval(key_points)
 
 
