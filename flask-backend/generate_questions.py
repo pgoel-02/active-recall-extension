@@ -1,4 +1,5 @@
 import re
+import json
 from openai import OpenAI
 client = OpenAI()
 
@@ -66,7 +67,7 @@ def format_as_dict(key_points):
     return eval(key_points)
 
 
-def generate_question_with_gpt4(main_point):
+def generate_question(main_point):
     """
     Generates a multiple-choice question from a given main point using GPT-4o.
     
@@ -117,3 +118,23 @@ def generate_question_with_gpt4(main_point):
     )
     return completion.choices[0].message.content
 
+
+def create_questions_from_main_points(main_points):
+    """
+    Generates questions for a list of main points.
+    
+    Args:
+    main_points (list of str): A list of main points to generate questions from.
+    
+    Returns:
+    list: A list of JSON objects, each containing a question, options, and correct answer.
+    """
+    questions = []
+    for point in main_points:
+        try:
+            question_data = format_as_dict(generate_question(point))
+            question_data = json.dumps(question_data,indent = 4)
+            questions.append(question_data)
+        except Exception as e:
+            print(f"Error generating question for point: {point}\n{e}")
+    return questions
