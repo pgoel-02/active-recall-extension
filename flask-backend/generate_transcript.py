@@ -1,6 +1,7 @@
 import os
 import psycopg2
 import yt_dlp
+import json
 from openai import OpenAI
 from pydub import AudioSegment
 
@@ -191,6 +192,28 @@ def transcribe_multiple(list_of_paths):
 
     return transcription if transcription != "" else None
 
+def format_timestamps(transcription):
+    """
+    Extracts transcribed text, start times, and end times from a list of verbose JSON transcription objects. 
+    
+    Args:
+    transcription (list of verbose JSON transcription objects): A list of transcribed segments from the Whisper model
+
+    Returns:
+    list of str: A list of JSON-formatted strings, each representing a transcription segment with the following structure:
+    {
+        "start": "Starting time in seconds",
+        "end": "Ending time in seconds",
+        "text": "Transcribed text"
+    }
+    """
+    result = []
+    for item in transcription:
+        data = {"start": item.start, "end": item.end, "text": item.text}
+        json_object = json.dumps(data, indent=4)
+        result.append(json_object)
+    return result
+
 def transcribe_with_timestamps(absolute_path_to_file):
     """
     Transcribes an audio file to text with corresponding timestamps at the segment level in English using OpenAI's Whisper model. 
@@ -200,7 +223,7 @@ def transcribe_with_timestamps(absolute_path_to_file):
     absolute_path_to_file (str): The absolute path to an mp3 file that will be transcribed. 
 
     Returns:
-    list of Verbose JSON transcription objects: A list of transcribed segments.
+    List of Verbose JSON transcription objects: A list of transcribed segments.
     """
     client = OpenAI()
     with open(absolute_path_to_file, "rb") as audio_file:
