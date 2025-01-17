@@ -137,3 +137,17 @@ def create_questions_from_main_points(main_points):
         except Exception as e:
             print(f"Error generating question for point: {point}\n{e}")
     return questions
+
+def get_questions(transcript):
+    """
+    Retrieves educational multiple-choice questions generated from a given text transcript. 
+
+    Args:
+    transcript (str): The transcription of a video.
+    
+    Returns:
+    list: A list of JSON objects, each containing a question, options, and correct answer.
+    """
+    main_points = format_as_list(summarize_text(transcript))
+    questions = create_questions_from_main_points(main_points)
+    return questions
