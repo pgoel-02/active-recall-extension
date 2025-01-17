@@ -23,8 +23,7 @@ def summarize_text(transcript, max_extractions = 15):
         messages=[
             {"role": "developer", "content": "You are an experienced educator. Your task is to carefully review text transcripts of educational videos or lectures and extract the most important facts, points, or takeaways. Focus on what students need to learn or remember for better understanding and retention."},
             {"role": "user", "content": f"Here is a transcript from a video.:\n\n{transcript}\n\n Please extract the most important points from the transcript and return them as a Python list, without any additional text. Please return at least one point and at most {max_extractions} points."}
-        ], 
-        response_format={ "type": "json_object" }
+        ]
     )
     return completion.choices[0].message.content
 
