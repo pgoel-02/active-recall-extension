@@ -135,6 +135,7 @@ def split_audio(absolute_path_to_file, chunk_duration_ms = 24*60*1000, overlap_d
     
     return output_files
 
+
 def transcribe(absolute_path_to_file):
     """
     Transcribes an audio file to text in English using OpenAI's Whisper model.
@@ -168,6 +169,7 @@ def transcribe(absolute_path_to_file):
         print(f"An unexpected error occurred: {e}")
         return None
 
+
 def transcribe_multiple(list_of_paths):
     """
     Transcribes multiple audio files and returns the concatenated transcriptions.
@@ -192,6 +194,7 @@ def transcribe_multiple(list_of_paths):
 
     return transcription if transcription != "" else None
 
+
 def format_timestamps(transcription):
     """
     Extracts transcribed text, start times, and end times from a list of verbose JSON transcription objects. 
@@ -214,6 +217,7 @@ def format_timestamps(transcription):
         result.append(json_object)
     return result
 
+
 def transcribe_with_timestamps(absolute_path_to_file):
     """
     Transcribes an audio file to text with corresponding timestamps at the segment level in English using OpenAI's Whisper model. 
@@ -234,6 +238,7 @@ def transcribe_with_timestamps(absolute_path_to_file):
             timestamp_granularities=["segment"]
         )
         return transcription.segments  
+    
 
 def delete_file(absolute_path_to_file):
     """
@@ -251,6 +256,7 @@ def delete_file(absolute_path_to_file):
     except Exception as e:
         print(f"Error deleting file {absolute_path_to_file}: {e}")
 
+
 def get_db_connection(db):
     """
     Establishes and returns a connection to the PostgreSQL database.
@@ -265,6 +271,7 @@ def get_db_connection(db):
         host="localhost",             
         port="5432"                    
     )
+
 
 def process_video_transcription(youtube_video_url):
     """
@@ -340,6 +347,4 @@ def get_transcript(youtube_video_id, youtube_video_url):
     finally:
         cursor.close()
         connection.close()
-
-
 
