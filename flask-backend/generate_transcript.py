@@ -300,9 +300,9 @@ def get_db_connection(db):
     )
 
 
-def process_video_transcription(youtube_video_url):
+def process_video_transcription(youtube_video_url, before):
     """
-    Downloads a YouTube video's audio and returns a transcription of this audio file. 
+    Downloads a YouTube video's audio and returns a transcription of this audio file, with or without timestamps depending on the value of 'before'.
     
     Directly transcribes the audio if the file size is below the default threshold of 25 MB (which is the limit for Whisper).
     Splits the audio into smaller chunks, transcribes each chunk, and returns a concatenation of these transcriptions if the file size is above the default threshold. 
@@ -311,13 +311,13 @@ def process_video_transcription(youtube_video_url):
 
     Args:
     youtube_video_url (str): The URL of the YouTube video to be processed.
+    before (bool): True indicates that we should present questions at the end of the video, while False represents questions throughout or both. 
 
     Returns:
-    str: The transcription of the video, or None if a transcription could not be made. 
-
-    Example:
-    >>> process_video_transcription('https://www.youtube.com/watch?v=example_video')
-    'This is the transcription of the given video.'
+    if before is True: 
+        str: The transcription of the video without timestamps, or None if a transcription could not be made. 
+    if before is False: 
+        List of str: A list of JSON-formatted strings, each representing a transcription segment with timestamps. 
     """
     path = download_audio(youtube_video_url)
     if not path: return None
@@ -326,17 +326,17 @@ def process_video_transcription(youtube_video_url):
     if file_size == None: return None
 
     if file_size:
-        transcription = transcribe(path)
-        delete_file(path)
+        transcription = transcribe(path) if before else format_timestamps(transcribe_with_timestamps(path))
     else:
         audio_file_chunks = split_audio(path)
-        transcription = transcribe_multiple(audio_file_chunks)
+        transcription = transcribe_multiple(audio_file_chunks) if before else transcribe_multiple_audio_with_timestamps(audio_file_chunks)
         for chunk in audio_file_chunks:
             delete_file(chunk)
+    delete_file(path)
     return transcription
 
 
-def get_transcript(youtube_video_id, youtube_video_url):
+def get_transcript(youtube_video_id, youtube_video_url, before):
     """
     Retrieves the transcript for a given YouTube video ID. 
 
@@ -346,6 +346,7 @@ def get_transcript(youtube_video_id, youtube_video_url):
     Args:
     youtube_video_id (str): The unique identifier of the YouTube video.
     youtube_video_url (str): The URL of the YouTube video.
+    before (bool): A value of True indicates that we should present questions at the end of the video, while False represents questions throughout or both. 
 
     Returns:
     str or None: The transcript of the video if successful. If an exception occurs, it logs the error message and returns None.
@@ -358,7 +359,8 @@ def get_transcript(youtube_video_id, youtube_video_url):
     cursor = connection.cursor()
     
     try:
-        cursor.execute("SELECT transcript FROM videos WHERE youtube_video_id = %s", (youtube_video_id,))
+        column = "transcript" if before else "timed_transcript"
+        cursor.execute(f"SELECT {column} FROM videos WHERE youtube_video_id = %s", (youtube_video_id,))
         transcript = cursor.fetchone()
         if transcript:
             return transcript[0] 
