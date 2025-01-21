@@ -354,15 +354,14 @@ def process_video_transcription(youtube_video_url, present_after):
     return transcription
 
 
-def get_transcript(youtube_video_id, youtube_video_url, present_after):
+def get_transcript(youtube_video_url, present_after):
     """
-    Retrieves the transcript for a given YouTube video ID. 
+    Retrieves the transcript for a given YouTube video.
 
     If the transcript exists in the PostgreSQL 'youtube_transcripts' database, it is fetched and returned. 
     If not, the function processes the video to generate a transcript, stores it in the database, and then returns the newly generated transcript.
 
     Args:
-    youtube_video_id (str): The unique identifier of the YouTube video.
     youtube_video_url (str): The URL of the YouTube video.
     present_after (bool): A value of True indicates that we should present questions at the end of the video, while False represents questions throughout or both. 
 
@@ -372,6 +371,7 @@ def get_transcript(youtube_video_id, youtube_video_url, present_after):
     if present_after is False: 
         List of str: A list of JSON-formatted strings, each representing a transcription segment with timestamps. 
     """
+    youtube_video_id = extract_youtube_video_id(youtube_video_url)
     connection = get_db_connection("youtube_transcripts")
     cursor = connection.cursor()
     
