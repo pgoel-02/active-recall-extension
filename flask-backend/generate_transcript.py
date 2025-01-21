@@ -361,7 +361,7 @@ def get_transcript(youtube_video_id, youtube_video_url, present_after):
         column = "transcript" if present_after else "timed_transcript"
         cursor.execute(f"SELECT {column} FROM videos WHERE youtube_video_id = %s", (youtube_video_id,))
         transcript = cursor.fetchone()
-        if transcript:
+        if transcript and transcript[0]:
             return transcript[0] 
         else:
             transcript = process_video_transcription(youtube_video_url, present_after)
