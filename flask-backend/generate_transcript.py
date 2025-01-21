@@ -366,8 +366,14 @@ def get_transcript(youtube_video_id, youtube_video_url, present_after):
         else:
             transcript = process_video_transcription(youtube_video_url, present_after)
             column = "transcript" if present_after else "timed_transcript"
-            cursor.execute(f"INSERT INTO videos (youtube_video_id, {column}) VALUES (%s, %s)", 
-                           (youtube_video_id, transcript if present_after else [transcript]))
+            query = f"""
+                INSERT INTO videos (youtube_video_id, {column})
+                VALUES (%s, %s)
+                ON CONFLICT (youtube_video_id) DO UPDATE 
+                SET {column} = EXCLUDED.{column}
+            """
+            values = (youtube_video_id, transcript if present_after else [transcript])
+            cursor.execute(query, values)
             connection.commit() 
             return transcript
     except Exception as e:
