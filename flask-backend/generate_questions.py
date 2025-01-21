@@ -126,12 +126,12 @@ def format_as_dict(key_points):
     return eval(key_points)
 
 
-def generate_question(main_point):
+def generate_question(key_point):
     """
-    Generates a multiple-choice question from a given main point using GPT-4o.
+    Generates a multiple-choice question from a given key point using GPT-4o.
     
     Args:
-    main_point (str): The main point to generate the question from.
+    key_point (str): The key point to generate the question from.
     
     Returns:
     str: A string containing a Python-style dictionary with the question, correct answer, and distractors.
@@ -154,7 +154,7 @@ def generate_question(main_point):
 
     prompt = f"""
     Generate a multiple-choice question based on the following point:
-    "{main_point}"
+    "{key_point}"
 
     The question should include:
     1. A clear question.
@@ -178,18 +178,18 @@ def generate_question(main_point):
     return completion.choices[0].message.content
 
 
-def create_questions_from_main_points(main_points):
+def create_questions_from_key_points(key_points):
     """
-    Generates questions for a list of main points.
+    Generates questions for a list of key points.
     
     Args:
-    main_points (list of str): A list of main points to generate questions from.
+    key_points (list of str): A list of key points to generate questions from.
     
     Returns:
     list: A list of JSON objects, each containing a question, options, and correct answer.
     """
     questions = []
-    for point in main_points:
+    for point in key_points:
         try:
             question_data = format_as_dict(generate_question(point))
             question_data = json.dumps(question_data,indent = 4)
@@ -208,6 +208,6 @@ def get_questions(transcript):
     Returns:
     list: A list of JSON objects, each containing a question, options, and correct answer.
     """
-    main_points = format_as_list(summarize_text(transcript))
-    questions = create_questions_from_main_points(main_points)
+    key_points = format_as_list(summarize_text(transcript))
+    questions = create_questions_from_key_points(key_points)
     return questions
