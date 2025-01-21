@@ -268,7 +268,7 @@ def transcribe_multiple_audio_with_timestamps(list_of_paths):
     Returns:
     List of str: A list of JSON-formatted strings, each representing a transcription segment. 
     An empty list is returned if no valid transcriptions are found. Each string has the following structure:
-        {
+    {
         "start": "Starting time in seconds",
         "end": "Ending time in seconds",
         "text": "Transcribed text"

@@ -21,8 +21,68 @@ def summarize_text(transcript, max_extractions = 15):
     completion = client.chat.completions.create(
         model="gpt-4o",
         messages=[
-            {"role": "developer", "content": "You are an experienced educator. Your task is to carefully review text transcripts of educational videos or lectures and extract the most important facts, points, or takeaways. Focus on what students need to learn or remember for better understanding and retention."},
-            {"role": "user", "content": f"Here is a transcript from a video.:\n\n{transcript}\n\n Please extract the most important points from the transcript and return them as a Python list, without any additional text. Please return at least one point and at most {max_extractions} points."}
+            {"role": "developer", "content": "You are an experienced educator."},
+            {"role": "user", "content": f"Your task is to carefully review text transcripts of educational videos or lectures and extract the most important facts, points, or takeaways. Focus on what students need to learn or remember for better understanding and retention. Here is a transcript from a video.:\n\n{transcript}\n\n Please extract the most important points from the transcript and return them as a Python list, without any additional text. Please return at least one point and at most {max_extractions} points."}
+        ]
+    )
+    return completion.choices[0].message.content
+
+def summarize_text_with_timestamps(transcript, max_extractions = 15):
+    """
+    Extracts key points from a timestamped video transcript using GPT-4o. 
+    Each key point is mapped to the corresponding timestamp from the transcription segment, indicating when the information has been fully introduced in the video. 
+
+    Args:
+    transcript (list of str): A list of JSON-formatted strings, each representing a transcription segment with timestamps. Each string has the following structure:
+    {
+        "start": "Starting time in seconds",
+        "end": "Ending time in seconds",
+        "text": "Transcribed text"
+    }
+    max_extractions (int): The maximum number of points that the model can extract from the video. Defaults to 15. 
+
+    Returns:
+    str: A string containing a Python-style list of key points extracted, with associated timestamps. 
+    Each item in the list is a JSON object that stores a key point and its associated timestamp.
+    """
+
+    transcript_text = "\n".join(transcript)
+
+    prompt = f"""
+    Your task is to carefully review text transcripts of educational videos or lectures and extract the most important facts, points, or takeaways. 
+    Focus on what students need to learn or remember for better understanding and retention.
+    Each key point must be aligned with the timestamp indicating when the concept has been fully introduced.
+
+    Please return at least one point and at most {max_extractions} points.
+
+    The input is a JSON-formatted list of segments, where each segment includes:
+    - `start`: The start time of the segment (in seconds).
+    - `end`: The end time of the segment (in seconds).
+    - `text`: The spoken content of that segment.
+
+    Your output should be a list, where each entry is a JSON object with the following format:
+    - "key_point" (string): The key idea or concept.
+    - "timestamp" (float): The time at which the key point was mentioned in the video, in seconds.
+
+    When generating the timestamp for a key point, use the `end` timestamp of the corresponding segment, indicating when the concept is fully introduced.
+
+    For example:
+    [
+        {{"key_point": "Polymorphism lets the same method name work differently for different objects in OOP.", "timestamp": 134.60000610351562}},
+        {{"key_point": "Encapsulation is a key principle of OOP.", "timestamp": 192.72000122070312}}
+    ]
+
+    Now, please extract the key points from the provided transcript and format your output accordingly.
+
+    Here is the transcript:
+    {transcript_text}
+    """
+
+    completion = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "developer", "content": "You are an experienced educator."},
+            {"role": "user", "content": prompt}
         ]
     )
     return completion.choices[0].message.content
@@ -50,10 +110,10 @@ def format_as_dict(key_points):
     """
     Uses regular expressions to extract a Python dictionary from a string that contains additional text or comments. 
 
-    Parameters:
+    Args:
     key_points (str): A string that contains a Python-style dictionary, potentially with additional text or comments.
 
-    Returns:
+    Returns: 
     dict: The extracted Python dictionary.
 
     Example:
