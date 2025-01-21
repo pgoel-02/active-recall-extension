@@ -390,7 +390,7 @@ def get_transcript(youtube_video_url, present_after):
                 ON CONFLICT (youtube_video_id) DO UPDATE 
                 SET {column} = EXCLUDED.{column}
             """
-            values = (youtube_video_id, transcript if present_after else [transcript])
+            values = (youtube_video_id, transcript)
             cursor.execute(query, values)
             connection.commit() 
             return transcript
