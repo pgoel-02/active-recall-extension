@@ -5,6 +5,24 @@ import json
 from openai import OpenAI
 from pydub import AudioSegment
 
+def extract_youtube_video_id(youtube_video_url):
+    """
+    Extracts the video ID from a given URL to a Youtube video using slicing. 
+    
+    Args:
+    youtube_video_url (str): The URL to a Youtube video. 
+    
+    Returns:
+    str: The video ID if found, or None if the URL is invalid.
+    """
+    starting_index = youtube_video_url.find('?v=')
+    
+    if starting_index != -1:
+        return youtube_video_url[starting_index + 3:]  
+    else:
+        return None
+
+
 def get_absolute_path(file_name):
     """
     Converts a given file name to its absolute path, ensuring that the file has an '.mp3' extension.
