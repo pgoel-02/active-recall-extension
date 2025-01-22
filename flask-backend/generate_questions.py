@@ -182,15 +182,14 @@ def create_questions_from_points(key_points, timestamped):
     Generates questions for a list of key points.
     
     Args:
-    timestamped (bool): True if key points are given timestamps, False if not
+    timestamped (bool): True if key points are given timestamps, False if not.
     if timestamped == True:
         key_points (list of str): A list of key points to generate questions from.
     if timestamped == False:
         key_points (list of dict): A list of dictionaries, with each dictionary storing a key point and its associated timestamp.
     
     Returns:
-    list: A list of dictionaries, with each dictionary containing a question, options, and correct answer. 
-    if timestamped == True, each dictionary will also contain the timestamp
+    list: A list of dictionaries, with each dictionary containing a question, options, and correct answer. If timestamped == True, each dictionary will also contain the timestamp.
     """
     questions = []
     for point in key_points:
@@ -203,16 +202,26 @@ def create_questions_from_points(key_points, timestamped):
     return questions
 
 
-def get_questions(transcript):
+def get_questions(transcript, timestamped):
     """
-    Retrieves educational multiple-choice questions generated from a given text transcript. 
+    Retrieves educational multiple-choice questions generated from a transcript.
 
     Args:
-    transcript (str): The transcription of a video.
+    timestamped (bool): True if key points are given timestamps, False if not.
+    if timestamped == True:
+        transcript (list of str): A list of JSON-formatted strings, each representing a transcription segment with timestamps. 
+        Each string has the following structure:
+        {
+        "start": "Starting time in seconds",
+        "end": "Ending time in seconds",
+        "text": "Transcribed text"
+        }
+    if timestamped == False:
+        transcript (str): The text transcription of a video.
     
     Returns:
-    list: A list of JSON objects, each containing a question, options, and correct answer.
+    list: A list of dictionaries, each containing a question, options, and correct answer. If timestamped == True, each dictionary will also contain the timestamp.
     """
-    key_points = format_as_list(summarize_text(transcript))
-    questions = create_questions_from_key_points(key_points)
+    key_points = format_as_list(summarize_text_with_timestamps(transcript)) if timestamped else format_as_list(summarize_text(transcript))
+    questions = create_questions_from_points(key_points, timestamped)
     return questions
