@@ -1,6 +1,21 @@
 import re
+import os
 from openai import OpenAI
 client = OpenAI()
+
+def load_prompt(file_name):
+    """
+    Loads a prompt, stored in a txt file, from the prompts directory.
+
+    Args:
+    file_name (str): The name of the txt file with the prompt.
+    
+    Returns: 
+    str: The prompt.
+    """
+    file_path = os.path.join(os.path.dirname(__file__), "prompts", file_name)
+    with open(file_path, "r") as file:
+        return file.read()
 
 def summarize_text(transcript, max_extractions = 15):
     """
