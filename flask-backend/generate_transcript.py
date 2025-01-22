@@ -131,7 +131,7 @@ def split_audio(absolute_path_to_file, chunk_duration_ms = 24*60*1000, overlap_d
     overlap_duration_ms (int): Duration of overlap between chunks in milliseconds. Defaults to 30 seconds.
 
     Returns:
-    List of absolute paths to the saved chunk files.
+    list of str: a list of absolute paths to the saved chunk files.
 
     Example:
     >>> split_audio('/absolute/path/to/example_video.mp3')
@@ -245,7 +245,7 @@ def transcribe_with_timestamps(absolute_path_to_file):
     absolute_path_to_file (str): The absolute path to an mp3 file that will be transcribed. 
 
     Returns:
-    List of Verbose JSON transcription objects: A list of transcribed segments.
+    list of Verbose JSON transcription objects: A list of transcribed segments.
     """
     client = OpenAI()
     with open(absolute_path_to_file, "rb") as audio_file:
@@ -266,7 +266,7 @@ def transcribe_multiple_audio_with_timestamps(list_of_paths):
     list_of_paths (list of str): A list of absolute file paths to audio files to be transcribed.
 
     Returns:
-    List of str: A list of JSON-formatted strings, each representing a transcription segment. 
+    list of str: A list of JSON-formatted strings, each representing a transcription segment. 
     An empty list is returned if no valid transcriptions are found. Each string has the following structure:
     {
         "start": "Starting time in seconds",
@@ -318,9 +318,9 @@ def get_db_connection(db):
     )
 
 
-def process_video_transcription(youtube_video_url, present_after):
+def process_video_transcription(youtube_video_url, timestamped):
     """
-    Downloads a YouTube video's audio and returns a transcription of this audio file, with or without timestamps depending on the value of 'present_after'.
+    Downloads a YouTube video's audio and returns a transcription of this audio file, with or without timestamps depending on the value of 'timestampedr'.
     
     Directly transcribes the audio if the file size is below the default threshold of 25 MB (which is the limit for Whisper).
     Splits the audio into smaller chunks, transcribes each chunk, and returns a concatenation of these transcriptions if the file size is above the default threshold. 
@@ -329,13 +329,13 @@ def process_video_transcription(youtube_video_url, present_after):
 
     Args:
     youtube_video_url (str): The URL of the YouTube video to be processed.
-    present_after (bool): True indicates that we should present questions at the end of the video, while False represents questions throughout or both. 
+    timestamped (bool): True indicates that we should generate timestamps in our transcript, and False indicates no timestamps.
 
     Returns:
-    if present_after is True: 
+    if timestamped is False: 
         str: The transcription of the video without timestamps, or None if a transcription could not be made. 
-    if present_after is False: 
-        List of str: A list of JSON-formatted strings, each representing a transcription segment with timestamps. 
+    if timestamped is True:
+        list of str: A list of JSON-formatted strings, each representing a transcription segment with timestamps. 
     """
     path = download_audio(youtube_video_url)
     if not path: return None
@@ -344,17 +344,17 @@ def process_video_transcription(youtube_video_url, present_after):
     if file_size == None: return None
 
     if file_size:
-        transcription = transcribe(path) if present_after else format_timestamps(transcribe_with_timestamps(path))
+        transcription = format_timestamps(transcribe_with_timestamps(path)) if timestamped else transcribe(path)
     else:
         audio_file_chunks = split_audio(path)
-        transcription = transcribe_multiple(audio_file_chunks) if present_after else transcribe_multiple_audio_with_timestamps(audio_file_chunks)
+        transcription = transcribe_multiple_audio_with_timestamps(audio_file_chunks) if timestamped else transcribe_multiple(audio_file_chunks)
         for chunk in audio_file_chunks:
             delete_file(chunk)
     delete_file(path)
     return transcription
 
 
-def get_transcript(youtube_video_url, present_after):
+def get_transcript(youtube_video_url, timestamped):
     """
     Retrieves the transcript for a given YouTube video.
 
@@ -363,27 +363,26 @@ def get_transcript(youtube_video_url, present_after):
 
     Args:
     youtube_video_url (str): The URL of the YouTube video.
-    present_after (bool): A value of True indicates that we should present questions at the end of the video, while False represents questions throughout or both. 
+    timestamped (bool): True indicates that we should generate timestamps in our transcript, and False indicates no timestamps.
 
     Returns:
-    if present_after is True: 
+    if timestamped is False:
         str: The transcription of the video without timestamps, or None if a transcription could not be made. 
-    if present_after is False: 
-        List of str: A list of JSON-formatted strings, each representing a transcription segment with timestamps. 
+    if timestamped is True:
+        list of str: A list of JSON-formatted strings, each representing a transcription segment with timestamps. 
     """
     youtube_video_id = extract_youtube_video_id(youtube_video_url)
     connection = get_db_connection("youtube_transcripts")
     cursor = connection.cursor()
     
     try:
-        column = "transcript" if present_after else "timed_transcript"
+        column = "timed_transcript" if timestamped else "transcript"
         cursor.execute(f"SELECT {column} FROM videos WHERE youtube_video_id = %s", (youtube_video_id,))
         transcript = cursor.fetchone()
         if transcript and transcript[0]:
             return transcript[0] 
         else:
-            transcript = process_video_transcription(youtube_video_url, present_after)
-            column = "transcript" if present_after else "timed_transcript"
+            transcript = process_video_transcription(youtube_video_url, timestamped)
             query = f"""
                 INSERT INTO videos (youtube_video_id, {column})
                 VALUES (%s, %s)
