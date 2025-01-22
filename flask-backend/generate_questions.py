@@ -1,5 +1,4 @@
 import re
-import json
 from openai import OpenAI
 client = OpenAI()
 
@@ -178,25 +177,31 @@ def generate_question(key_point):
     return completion.choices[0].message.content
 
 
-def create_questions_from_key_points(key_points):
+def create_questions_from_points(key_points, timestamped):
     """
     Generates questions for a list of key points.
     
     Args:
-    key_points (list of str): A list of key points to generate questions from.
+    timestamped (bool): True if key points are given timestamps, False if not
+    if timestamped == True:
+        key_points (list of str): A list of key points to generate questions from.
+    if timestamped == False:
+        key_points (list of dict): A list of dictionaries, with each dictionary storing a key point and its associated timestamp.
     
     Returns:
-    list: A list of JSON objects, each containing a question, options, and correct answer.
+    list: A list of dictionaries, with each dictionary containing a question, options, and correct answer. 
+    if timestamped == True, each dictionary will also contain the timestamp
     """
     questions = []
     for point in key_points:
         try:
-            question_data = format_as_dict(generate_question(point))
-            question_data = json.dumps(question_data,indent = 4)
+            question_data = format_as_dict(generate_question(point['key_point'] if timestamped else point))
+            if timestamped: question_data['timestamp'] = point['timestamp']
             questions.append(question_data)
         except Exception as e:
             print(f"Error generating question for point: {point}\n{e}")
     return questions
+
 
 def get_questions(transcript):
     """
