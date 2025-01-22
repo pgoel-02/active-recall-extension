@@ -82,8 +82,8 @@ def download_audio(youtube_url):
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download(youtube_url)  
-            file_name = ydl.prepare_filename(ydl.extract_info(youtube_url, download=False))
+            info = ydl.extract_info(youtube_url, download=True)  
+            file_name = ydl.prepare_filename(info)   
             return get_absolute_path(file_name)
     except yt_dlp.DownloadError as e:
         print(f"Download error occurred: {e}")
