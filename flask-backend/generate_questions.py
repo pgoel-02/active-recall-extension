@@ -40,7 +40,7 @@ def split_transcript(transcript, max_chunk_size=100_000):
         
         if ending_index != transcript_length and transcript[ending_index-1] != '.':
             period_index = transcript.find('.', ending_index)
-            if period_index != -1: ending_index = period_index + 1
+            ending_index = period_index + 1
         
         chunks.append(transcript[starting_index:ending_index])
         starting_index = ending_index
