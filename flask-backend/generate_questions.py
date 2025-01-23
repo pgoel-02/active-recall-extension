@@ -18,6 +18,36 @@ def load_prompt(file_name):
     with open(file_path, "r") as file:
         return file.read()
 
+def split_transcript(transcript, max_chunk_size=100_000):
+    """
+    Splits a long transcript into chunks of a specified maximum size.
+
+    Args:
+    transcript (str): The long transcript to be split.
+    max_chunk_size (int): The maximum size of each chunk in characters. Defaults to 100,000.
+
+    Returns:
+    list of str: A list of transcript chunks, each no longer than max_chunk_size characters.
+    """
+    chunks = []
+    starting_index = 0
+    transcript_length = len(transcript)
+
+    while starting_index < transcript_length:
+        ending_index = starting_index + max_chunk_size
+        
+        if ending_index > transcript_length:
+            ending_index = transcript_length
+        
+        if ending_index != transcript_length and transcript[ending_index-1] != '.':
+            period_index = transcript.find('.', ending_index)
+            if period_index != -1:
+                ending_index = period_index + 1
+        
+        chunks.append(transcript[starting_index:ending_index])
+        starting_index = ending_index
+    return chunks
+
 def summarize_text(transcript, max_extractions = 15):
     """
     Extracts key points from a given text transcript using GPT-4o. The number of points will be between 1 - max_extractions.
