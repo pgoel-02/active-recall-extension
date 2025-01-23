@@ -147,21 +147,8 @@ def generate_question(key_point):
     ```
     """
 
-    prompt = f"""
-    Generate a multiple-choice question based on the following point:
-    "{key_point}"
-
-    The question should include:
-    1. A clear question.
-    2. Four options, where one is the correct answer and the other three are believable distractors. Please keep options concise.
-    3. Indicate which option is correct. The correct option should be based on the given point. 
-    4. Please do not assign numbers or letters to each option. 
-
-    Return the result in a Python dictionary with the following key-value pairs: 
-    question: "Your question text here",
-    options: ["Option A", "Option B", "Option C", "Option D"], 
-    correct_answer: "Option A"
-    """
+    prompt = load_prompt("generate_question.txt")
+    prompt = prompt.format(key_point=key_point)
 
     completion = client.chat.completions.create(
         model="gpt-4o",
