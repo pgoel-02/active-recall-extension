@@ -36,13 +36,11 @@ def split_transcript(transcript, max_chunk_size=100_000):
     while starting_index < transcript_length:
         ending_index = starting_index + max_chunk_size
         
-        if ending_index > transcript_length:
-            ending_index = transcript_length
+        if ending_index > transcript_length: ending_index = transcript_length
         
         if ending_index != transcript_length and transcript[ending_index-1] != '.':
             period_index = transcript.find('.', ending_index)
-            if period_index != -1:
-                ending_index = period_index + 1
+            if period_index != -1: ending_index = period_index + 1
         
         chunks.append(transcript[starting_index:ending_index])
         starting_index = ending_index
@@ -236,7 +234,15 @@ def get_questions(transcript, timestamped):
     Returns:
     list: A list of dictionaries, each containing a question, options, and correct answer. If timestamped == True, each dictionary will also contain the timestamp.
     """
-
-    key_points = format_as_list(summarize_text_with_timestamps(transcript)) if timestamped else format_as_list(summarize_text(transcript))
-    questions = create_questions_from_points(key_points, timestamped)
+    chunks = [transcript]
+    if len(transcript) > 100000: 
+        chunks = split_transcript(transcript)
+    
+    questions = []
+    for chunk in chunks:
+        key_points = summarize_text_with_timestamps(chunk) if timestamped else summarize_text(chunk)
+        key_points = format_as_list(key_points)
+        questions.append(create_questions_from_points(key_points, timestamped))
+    
+    questions = [question for sublist in questions for question in sublist]
     return questions
