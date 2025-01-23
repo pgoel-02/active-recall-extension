@@ -1,5 +1,6 @@
 import re
 import os
+import ast
 from openai import OpenAI
 client = OpenAI()
 
@@ -20,7 +21,7 @@ def load_prompt(file_name):
 
 def split_transcript(transcript, max_chunk_size=100_000):
     """
-    Splits a long transcript into chunks of a specified maximum size.
+    Splits a long transcript into chunks of a specified maximum size. Chunks are guaranteed to not cut off sentences. 
 
     Args:
     transcript (str): The long transcript to be split.
@@ -39,10 +40,49 @@ def split_transcript(transcript, max_chunk_size=100_000):
         if ending_index > transcript_length: ending_index = transcript_length
         
         if ending_index != transcript_length and transcript[ending_index-1] != '.':
-            period_index = transcript.find('.', ending_index)
-            ending_index = period_index + 1
+            ending_index = transcript.find('.', ending_index)
+            ending_index = ending_index + 1
         
         chunks.append(transcript[starting_index:ending_index])
+        starting_index = ending_index
+    return chunks
+
+
+def split_timestamped_transcript(transcript, max_chunk_size=95_000):
+    """
+    Splits a long transcript into chunks of a specified maximum size, ensuring transcription segments are not split across chunks.
+
+    Args:
+    transcript (str): A string representation of a JSON-formatted list, where each item in the list is a dictionary representing a transcription segment with "start", "end", and "text" fields.
+    max_chunk_size (int): The maximum size of each chunk in characters, excluding extra characters taken to ensure an entire transcription segment is grabbed. Defaults to 95,000.
+
+    Returns:
+    list of (list of str): The list of chunks. Each chunk is a list of JSON-formatted strings. Each string within a chunk represents a transcription segment with timestamps. 
+    """
+    chunks = []
+    starting_index = 0
+    transcript_length = len(transcript)
+
+    while starting_index < transcript_length:
+        starting_index = transcript.find("'{", starting_index)
+        if starting_index == -1: 
+            break
+        
+        ending_index = starting_index + max_chunk_size
+        if ending_index > transcript_length:
+            ending_index = transcript_length
+        
+        if ending_index != transcript_length and transcript[ending_index-1] != '.':
+            ending_index = transcript.find("}'", ending_index)
+            ending_index = ending_index + 2
+
+        chunk = transcript[starting_index:ending_index]
+        if not chunk.endswith(']'):
+            chunk += ']'
+        if not chunk.startswith('['):
+            chunk = '[' + chunk
+        
+        chunks.append(ast.literal_eval(chunk))
         starting_index = ending_index
     return chunks
 
@@ -234,9 +274,9 @@ def get_questions(transcript, timestamped):
     Returns:
     list: A list of dictionaries, each containing a question, options, and correct answer. If timestamped == True, each dictionary will also contain the timestamp.
     """
-    chunks = [transcript]
-    if len(transcript) > 100000: 
-        chunks = split_transcript(transcript)
+    chunks = [transcript] 
+    if len(str(transcript)) > 100000: 
+        chunks = split_timestamped_transcript(str(transcript)) if timestamped else split_transcript(transcript)
     
     questions = []
     for chunk in chunks:
