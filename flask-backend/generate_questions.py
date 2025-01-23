@@ -13,6 +13,7 @@ def load_prompt(file_name):
     Returns: 
     str: The prompt.
     """
+
     file_path = os.path.join(os.path.dirname(__file__), "prompts", file_name)
     with open(file_path, "r") as file:
         return file.read()
@@ -32,14 +33,19 @@ def summarize_text(transcript, max_extractions = 15):
     >>> summarize_text('This is our transcript...')
     '['Key Point 1', 'Key Point 2']'
     """
+
+    prompt = load_prompt("summarize.txt")
+    prompt = prompt.format(max_extractions=max_extractions, transcript=transcript)
+
     completion = client.chat.completions.create(
         model="gpt-4o",
         messages=[
             {"role": "developer", "content": "You are an experienced educator."},
-            {"role": "user", "content": f"Your task is to carefully review text transcripts of educational videos or lectures and extract the most important facts, points, or takeaways. Focus on what students need to learn or remember for better understanding and retention. Here is a transcript from a video.:\n\n{transcript}\n\n Please extract the most important points from the transcript and return them as a Python list, without any additional text. Please return at least one point and at most {max_extractions} points."}
+            {"role": "user", "content": prompt}
         ]
     )
     return completion.choices[0].message.content
+
 
 def summarize_text_with_timestamps(transcript, max_extractions = 15):
     """
@@ -60,37 +66,10 @@ def summarize_text_with_timestamps(transcript, max_extractions = 15):
     Each item in the list is a JSON object that stores a key point and its associated timestamp.
     """
 
-    transcript_text = "\n".join(transcript)
+    transcript = "\n".join(transcript)
 
-    prompt = f"""
-    Your task is to carefully review text transcripts of educational videos or lectures and extract the most important facts, points, or takeaways. 
-    Focus on what students need to learn or remember for better understanding and retention.
-    Each key point must be aligned with the timestamp indicating when the concept has been fully introduced.
-
-    Please return at least one point and at most {max_extractions} points.
-
-    The input is a JSON-formatted list of segments, where each segment includes:
-    - `start`: The start time of the segment (in seconds).
-    - `end`: The end time of the segment (in seconds).
-    - `text`: The spoken content of that segment.
-
-    Your output should be a list, where each entry is a JSON object with the following format:
-    - "key_point" (string): The key idea or concept.
-    - "timestamp" (float): The time at which the key point was mentioned in the video, in seconds.
-
-    When generating the timestamp for a key point, use the `end` timestamp of the corresponding segment, indicating when the concept is fully introduced.
-
-    For example:
-    [
-        {{"key_point": "Polymorphism lets the same method name work differently for different objects in OOP.", "timestamp": 134.60000610351562}},
-        {{"key_point": "Encapsulation is a key principle of OOP.", "timestamp": 192.72000122070312}}
-    ]
-
-    Now, please extract the key points from the provided transcript and format your output accordingly.
-
-    Here is the transcript:
-    {transcript_text}
-    """
+    prompt = load_prompt("summarize_with_timestamps.txt")
+    prompt = prompt.format(max_extractions=max_extractions, transcript=transcript)
 
     completion = client.chat.completions.create(
         model="gpt-4o",
@@ -116,6 +95,7 @@ def format_as_list(key_points):
     >>> format_as_list(example_string)
     [1, 2, 3, 'a', 'b', 'c']
     """
+
     key_points = re.search(r'\[.*\]', key_points, re.DOTALL)
     key_points = key_points.group(0)
     return eval(key_points)
@@ -135,6 +115,7 @@ def format_as_dict(key_points):
     >>> format_as_dict(example_dict)
     {"key1":"value", "key2", "value"}
     """
+
     key_points = re.search(r'\{.*\}', key_points, re.DOTALL)
     key_points = key_points.group(0)
     return eval(key_points)
@@ -206,6 +187,7 @@ def create_questions_from_points(key_points, timestamped):
     Returns:
     list: A list of dictionaries, with each dictionary containing a question, options, and correct answer. If timestamped == True, each dictionary will also contain the timestamp.
     """
+
     questions = []
     for point in key_points:
         try:
@@ -237,6 +219,7 @@ def get_questions(transcript, timestamped):
     Returns:
     list: A list of dictionaries, each containing a question, options, and correct answer. If timestamped == True, each dictionary will also contain the timestamp.
     """
+
     key_points = format_as_list(summarize_text_with_timestamps(transcript)) if timestamped else format_as_list(summarize_text(transcript))
     questions = create_questions_from_points(key_points, timestamped)
     return questions

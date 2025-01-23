@@ -1,0 +1,8 @@
+Your task is to carefully review text transcripts of educational videos or lectures and extract the most important facts, points, or takeaways. 
+Focus on what students need to learn or remember for better understanding and retention. 
+Here is a transcript from a video:
+
+{transcript}
+
+Please extract the most important points from the transcript and return them as a Python list, without any additional text. 
+Please return at least one point and at most {max_extractions} points.
