@@ -6,7 +6,8 @@ Your task is to:
 
 If all of the questions in the original input list are educationally valuable and the list has at most 15 questions, you are welcome to return the original list, unchanged. 
 
-Output: Return the final cleaned list of dictionaries, meeting the above criteria. Please ensure that all remaining dictionaries retain their original structure and data.
+Output: Return the final cleaned list of dictionaries, meeting the above criteria. Please ensure that all remaining dictionaries retain their original structure and data. 
+Please return the output as a Python list, where element is a Python-style dictionary.
 
 Here is the input list of questions:
 {questions}
