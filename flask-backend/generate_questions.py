@@ -254,6 +254,31 @@ def create_questions_from_points(key_points, timestamped):
     return questions
 
 
+def clean_questions(questions, max_questions = 15):
+    """
+    Cleans a list of questions, limiting the number of questions and removing any questions that are not educationally valuable. 
+    
+    Args:
+    questions (list of dict): A list of dictionaries, each containing a question, options, correct answer, and optionally a timestamp.
+    max_questions (int): The maximum number of questions our list should have. Defaults to 15.
+    
+    Returns:
+    str: A string containing a list of dictionaries, with each dictionary containing a question, options, correct answer, and optionally a timestamp.
+    """
+
+    prompt = load_prompt("clean_questions.txt")
+    prompt = prompt.format(questions=questions, max_questions=max_questions)
+
+    completion = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": "You are an experienced educator generating educational questions."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+    return completion.choices[0].message.content
+
+
 def get_questions(transcript, timestamped):
     """
     Retrieves educational multiple-choice questions generated from a transcript.
@@ -285,4 +310,5 @@ def get_questions(transcript, timestamped):
         questions.append(create_questions_from_points(key_points, timestamped))
     
     questions = [question for sublist in questions for question in sublist]
-    return questions
+    questions = clean_questions(questions)
+    return format_as_list(questions)

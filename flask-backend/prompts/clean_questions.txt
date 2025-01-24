@@ -1,0 +1,12 @@
+You will be provided with a list of questions as a list of dictionaries. Each dictionary contains containing a question, options, a correct answer, and potentially a timestamp.
+
+Your task is to: 
+1. Remove non-educational questions: Exclude any questions that are not educationally valuable to students. Educational value is determined by whether the question helps students learn or understand a topic better, practice a skill, or build relevant knowledge in the subject area. Remove irrelevant questions. 
+2. Limit to {max_questions} questions: If the cleaned list still contains more than {max_questions} questions, select the most educationally valuable {max_questions} questions. Consider factors such as relevance, difficulty, depth of explanation, and usefulness in aiding student understanding.
+
+If all of the questions in the original input list are educationally valuable and the list has at most 15 questions, you are welcome to return the original list, unchanged. 
+
+Output: Return the final cleaned list of dictionaries, meeting the above criteria. Please ensure that all remaining dictionaries retain their original structure and data.
+
+Here is the input list of questions:
+{questions}
