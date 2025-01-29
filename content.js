@@ -9,11 +9,19 @@ const IFRAME_STYLES = {
   boxShadow: "0 4px 10px rgba(0, 0, 0, 0.5)",
 };
 
+function sendVideoUrlToReact(iframe) {
+  const videoUrl = window.location.href;
+  iframe.onload = () => {
+    iframe.contentWindow.postMessage(videoUrl, "http://localhost:5173");
+  };
+}
+
 function createIframe() {
   const iframe = document.createElement("iframe");
   iframe.src = "http://localhost:5173";
   Object.assign(iframe.style, IFRAME_STYLES);
   document.body.appendChild(iframe);
+  sendVideoUrlToReact(iframe);
 }
 
 createIframe();
