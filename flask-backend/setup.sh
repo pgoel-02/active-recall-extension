@@ -12,7 +12,7 @@ pip install --upgrade pip
 
 # Install the required libraries
 echo "Installing required packages..."
-pip install openai psycopg2-binary yt-dlp pydub flask audioop-lts
+pip install openai psycopg2-binary yt-dlp pydub flask audioop-lts flask_cors
 
 # Install ffmpeg if not already found, since pydub requires ffmpeg
 echo "Checking if ffmpeg is installed..."
