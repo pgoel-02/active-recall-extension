@@ -19,7 +19,7 @@ function sendVideoUrlToReact(iframe) {
   };
 }
 
-function trackVideoTime(iframe) {
+function sendVideoTimeToReact(iframe) {
   const video = document.querySelector("video");
   if (video) {
     setInterval(() => {
@@ -32,13 +32,25 @@ function trackVideoTime(iframe) {
   }
 }
 
+function sendVideoDuration(iframe) {
+  const video = document.querySelector("video");
+  if (video) {
+    const videoDuration = video.duration;
+    iframe.contentWindow.postMessage(
+      { type: "videoDuration", videoDuration },
+      "http://localhost:5173"
+    );
+  }
+}
+
 function triggerIframePipeline() {
   const iframe = document.createElement("iframe");
   iframe.src = "http://localhost:5173";
   Object.assign(iframe.style, IFRAME_STYLES);
   document.body.appendChild(iframe);
   sendVideoUrlToReact(iframe);
-  trackVideoTime(iframe);
+  sendVideoTimeToReact(iframe);
+  sendVideoDuration(iframe);
 }
 
 triggerIframePipeline();
