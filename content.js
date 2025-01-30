@@ -12,16 +12,33 @@ const IFRAME_STYLES = {
 function sendVideoUrlToReact(iframe) {
   const videoUrl = window.location.href;
   iframe.onload = () => {
-    iframe.contentWindow.postMessage(videoUrl, "http://localhost:5173");
+    iframe.contentWindow.postMessage(
+      { type: "videoUrl", videoUrl },
+      "http://localhost:5173"
+    );
   };
 }
 
-function createIframe() {
+function trackVideoTime(iframe) {
+  const video = document.querySelector("video");
+  if (video) {
+    setInterval(() => {
+      const currentTime = video.currentTime;
+      iframe.contentWindow.postMessage(
+        { type: "currentTime", currentTime },
+        "http://localhost:5173"
+      );
+    }, 1000);
+  }
+}
+
+function triggerIframePipeline() {
   const iframe = document.createElement("iframe");
   iframe.src = "http://localhost:5173";
   Object.assign(iframe.style, IFRAME_STYLES);
   document.body.appendChild(iframe);
   sendVideoUrlToReact(iframe);
+  trackVideoTime(iframe);
 }
 
-createIframe();
+triggerIframePipeline();
