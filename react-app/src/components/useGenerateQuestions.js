@@ -3,12 +3,21 @@ import useSendDataToFlask from "./useSendDataToFlask";
 
 const useGenerateQuestions = (selectedAnswer, youtubeUrl) => {
   const [questions, setQuestions] = useState([]);
+  const [hasError, setHasError] = useState(false);
   const { responseMessage, error, sendDataToFlask } = useSendDataToFlask();
 
   useEffect(() => {
-    const timestamped = selectedAnswer === "Throughout";
-    sendDataToFlask(youtubeUrl, timestamped);
+    if (selectedAnswer && youtubeUrl) {
+      const timestamped = selectedAnswer === "Throughout";
+      sendDataToFlask(youtubeUrl, timestamped);
+    }
   }, [selectedAnswer, youtubeUrl, sendDataToFlask]);
+
+  useEffect(() => {
+    if (error) {
+      setHasError(true);
+    }
+  }, [error]);
 
   useEffect(() => {
     if (responseMessage) {
@@ -16,11 +25,11 @@ const useGenerateQuestions = (selectedAnswer, youtubeUrl) => {
     }
   }, [responseMessage]);
 
-  if (error) {
-    return null;
-  }
-
-  return questions.length > 0 ? questions : [];
+  return {
+    questions: questions,
+    hasError: hasError,
+    isLoading: !hasError && questions.length === 0,
+  };
 };
 
 export default useGenerateQuestions;
