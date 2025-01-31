@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import useSendDataToFlask from "./useSendDataToFlask";
 
 const useGenerateQuestions = (selectedAnswer, youtubeUrl) => {
@@ -6,10 +6,14 @@ const useGenerateQuestions = (selectedAnswer, youtubeUrl) => {
   const [hasError, setHasError] = useState(false);
   const { responseMessage, error, sendDataToFlask } = useSendDataToFlask();
 
+  const hasCalledAPI = useRef(false);
+
   useEffect(() => {
-    if (selectedAnswer && youtubeUrl) {
+    if (selectedAnswer && youtubeUrl && !hasCalledAPI.current) {
       const timestamped = selectedAnswer === "Throughout";
       sendDataToFlask(youtubeUrl, timestamped);
+
+      hasCalledAPI.current = true;
     }
   }, [selectedAnswer, youtubeUrl, sendDataToFlask]);
 
