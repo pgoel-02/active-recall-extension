@@ -10,8 +10,8 @@ const useGetQuestions = (selectedAnswer) => {
 
   useEffect(() => {
     const handleMessage = (event) => {
-      if (event.data) {
-        setVideoUrl(event.data);
+      if (event.data?.type === "videoUrl") {
+        setVideoUrl(event.data.videoUrl);
       }
     };
 
