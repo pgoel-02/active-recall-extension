@@ -1,5 +1,3 @@
-import React from "react";
-
 const RadioAnswer = ({ value, label, name, onChange, checked }) => (
   <label>
     <input
