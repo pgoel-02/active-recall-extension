@@ -12,10 +12,7 @@ const IFRAME_STYLES = {
 function sendVideoUrlToReact(iframe) {
   const videoUrl = window.location.href;
   iframe.onload = () => {
-    iframe.contentWindow.postMessage(
-      { type: "videoUrl", videoUrl },
-      "http://localhost:5173"
-    );
+    iframe.contentWindow.postMessage({ type: "videoUrl", videoUrl }, "*");
   };
 }
 
@@ -26,7 +23,7 @@ function sendVideoTimeToReact(iframe) {
       const currentTime = video.currentTime;
       iframe.contentWindow.postMessage(
         { type: "currentTime", currentTime },
-        "http://localhost:5173"
+        "*"
       );
     }, 1000);
   }
@@ -34,12 +31,13 @@ function sendVideoTimeToReact(iframe) {
 
 function sendVideoDuration(iframe) {
   const video = document.querySelector("video");
-  if (video) {
-    const videoDuration = video.duration;
-    iframe.contentWindow.postMessage(
-      { type: "videoDuration", videoDuration },
-      "http://localhost:5173"
-    );
+  if (video.duration) {
+    setInterval(() => {
+      iframe.contentWindow.postMessage(
+        { type: "videoDuration", videoDuration: video.duration },
+        "*"
+      );
+    }, 1000);
   }
 }
 
@@ -48,9 +46,9 @@ function triggerIframePipeline() {
   iframe.src = "http://localhost:5173";
   Object.assign(iframe.style, IFRAME_STYLES);
   document.body.appendChild(iframe);
+  sendVideoDuration(iframe);
   sendVideoUrlToReact(iframe);
   sendVideoTimeToReact(iframe);
-  sendVideoDuration(iframe);
 }
 
 triggerIframePipeline();
