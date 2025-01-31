@@ -2,7 +2,10 @@ from flask import Flask, request, jsonify
 from generate_transcript import get_transcript 
 from generate_questions import get_questions 
 
+from flask_cors import CORS
+
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/generate_questions', methods=['POST'])
 def generate_questions():
