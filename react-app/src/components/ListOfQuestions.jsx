@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import "./IntroQuestion.css";
-import "./QuizComponent.css";
+import "./ListOfQuestions.css";
 
-const QuizComponent = ({ questions }) => {
+const ListOfQuestions = ({ questions }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -123,4 +123,4 @@ const QuizComponent = ({ questions }) => {
   );
 };
 
-export default QuizComponent;
+export default ListOfQuestions;
