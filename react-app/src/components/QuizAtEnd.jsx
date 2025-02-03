@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ListOfQuestions from "./ListOfQuestions";
-import useGetAllData from "./useGetAllData";
+import useGetAllData from "../hooks/useGetAllData";
 
 function QuizAtEnd({ selectedAnswer }) {
   const { questions, hasError, videoLength } = useGetAllData(selectedAnswer);
