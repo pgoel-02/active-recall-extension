@@ -20,7 +20,7 @@ Retain transforms YouTube into an interactive learning experience, helping users
 - **PostgreSQL:** Database to store processed video data for faster performance.  
 
 ### **Frontend:**  
-- **React, JavaScript, HTML, CSS:** Chrome extension interface for user interactions.  
+- **React, JavaScript, HTML, CSS:** User interface for the Chrome extension, with React set up using Vite for faster development.
 - **PostMessage API:** Manages communication between YouTube iframe and extension logic.  
 
 ## 🌱 Future Opportunities  
