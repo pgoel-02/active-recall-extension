@@ -12,10 +12,10 @@ import QuizAtEnd from "./QuizAtEnd";
  * @param {Object} selectedAnswer - The selected answer passed from parent.
  * @param {Object} testData - The test data containing questions and video length.
  */
-function TimedQuiz({ selectedAnswer, testData = null }) {
-  // Fetching data from custom hook or from testData prop
+function TimedQuiz({ selectedAnswer }) {
+  // Fetching data from custom hook
   const hookData = useGetAllData(selectedAnswer);
-  const { questions, hasError, videoLength } = testData || hookData;
+  const { questions, hasError, videoLength } = hookData;
 
   // State variables for current time, active question index, answered questions,
   // and whether the "next" button is enabled
