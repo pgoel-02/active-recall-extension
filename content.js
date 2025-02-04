@@ -41,14 +41,34 @@ function sendVideoDuration(iframe) {
   }
 }
 
-function triggerIframePipeline() {
-  const iframe = document.createElement("iframe");
-  iframe.src = "http://localhost:5173";
-  Object.assign(iframe.style, IFRAME_STYLES);
-  document.body.appendChild(iframe);
-  sendVideoDuration(iframe);
-  sendVideoUrlToReact(iframe);
-  sendVideoTimeToReact(iframe);
+function isAdPlaying() {
+  const adOverlay = document.querySelector(".ytp-ad-player-overlay-layout");
+  return adOverlay !== null;
 }
 
-triggerIframePipeline();
+let iframeTriggered = false;
+let currentUrl = window.location.href;
+
+function triggerIframePipeline() {
+  setTimeout(() => {
+    if (!iframeTriggered && !isAdPlaying()) {
+      iframeTriggered = true;
+      const iframe = document.createElement("iframe");
+      iframe.src = "http://localhost:5173";
+      Object.assign(iframe.style, IFRAME_STYLES);
+      document.body.appendChild(iframe);
+      sendVideoDuration(iframe);
+      sendVideoUrlToReact(iframe);
+      sendVideoTimeToReact(iframe);
+    }
+  }, 1000);
+}
+
+setInterval(() => {
+  if (window.location.href !== currentUrl) {
+    currentUrl = window.location.href;
+    iframeTriggered = false;
+  } else if (!iframeTriggered) {
+    triggerIframePipeline();
+  }
+}, 500);
