@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./IntroQuestion.css";
 import RadioAnswer from "./RadioAnswer.jsx";
 
-function IntroQuestion() {
+function IntroQuestion({ onAnswerChange }) {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isVisible, setIsVisible] = useState(true);
 
@@ -12,8 +12,8 @@ function IntroQuestion() {
 
   const handleSubmit = () => {
     if (selectedAnswer) {
-      console.log("User selected:", selectedAnswer);
       setIsVisible(false);
+      onAnswerChange(selectedAnswer);
     }
   };
 
@@ -28,7 +28,7 @@ function IntroQuestion() {
   }
 
   return (
-    <div className="initial-prompt">
+    <div className="prompt">
       <h1>When would you like Retain to ask you questions about the video?</h1>
       {answers.map((answer) => (
         <div key={answer.value}>
