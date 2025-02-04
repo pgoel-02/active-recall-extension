@@ -2,8 +2,18 @@ import React, { useState, useEffect } from "react";
 import ListOfQuestions from "./ListOfQuestions";
 import useGetAllData from "../hooks/useGetAllData";
 
-function QuizAtEnd({ selectedAnswer }) {
-  const { questions, hasError, videoLength } = useGetAllData(selectedAnswer);
+function QuizAtEnd({
+  selectedAnswer,
+  preloadedQuestions = null,
+  preloadedVideoLength = 0,
+}) {
+  const { questions, hasError, videoLength } = preloadedQuestions
+    ? {
+        questions: preloadedQuestions,
+        hasError: false,
+        videoLength: preloadedVideoLength,
+      }
+    : useGetAllData(selectedAnswer);
   const [showQuestions, setShowQuestions] = useState(false);
 
   useEffect(() => {
