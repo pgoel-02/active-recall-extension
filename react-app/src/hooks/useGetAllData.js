@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import useGetQuestions from "./useGetQuestions";
 
+/**
+ * Custom hook to get all data relevant to presenting questions to users, including video length and questions.
+ *
+ * @param {string} selectedAnswer - "Throughout", "End", or "Both", defining when questions are prompted.
+ * @return {object} - An object containing questions, error state, and video length.
+ */
 function useGetAllData(selectedAnswer) {
   const [videoLength, setVideoLength] = useState(0.0);
   const { questions, hasError } = useGetQuestions(selectedAnswer);
