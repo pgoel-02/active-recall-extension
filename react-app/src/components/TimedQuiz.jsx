@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import TimedQuestion from "./TimedQuestion";
 import "./TimedQuiz.css";
 import useGetAllData from "../hooks/useGetAllData";
+import QuizAtEnd from "./QuizAtEnd";
 
 /**
  * TimedQuiz component handles displaying timed questions based on video timestamp.
@@ -120,6 +121,21 @@ function TimedQuiz({ selectedAnswer, testData = null }) {
       [questionId]: selectedOption,
     }));
   };
+
+  const allQuestionsAnswered =
+    questions &&
+    questions.length > 0 &&
+    questions.every((q) => answeredQuestions[q.id]);
+
+  if (allQuestionsAnswered && selectedAnswer === "Both") {
+    return (
+      <QuizAtEnd
+        selectedAnswer={selectedAnswer}
+        preloadedQuestions={questions}
+        preloadedVideoLength={videoLength}
+      />
+    );
+  }
 
   /**
    * Handles moving to the next question when the "Next" button is clicked.
