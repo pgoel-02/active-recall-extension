@@ -26,3 +26,4 @@ dist-ssr
 # Python/Flask backend
 __pycache__
 chromeext
+.env
