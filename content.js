@@ -98,7 +98,8 @@ const IFRAME_STYLES = {
   width: "34%",
   height: "25%",
   zIndex: "999999",
-  boxShadow: "0 4px 10px rgba(0, 0, 0, 0.5)",
+  minWidth: "343px",
+  minHeight: "153px",
 };
 
 let iframeTriggered = false;
