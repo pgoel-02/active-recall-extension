@@ -12,8 +12,16 @@ const IFRAME_STYLES = {
 function sendVideoUrlToReact(iframe) {
   const videoUrl = window.location.href;
   iframe.onload = () => {
+    console.log("sending");
     iframe.contentWindow.postMessage({ type: "videoUrl", videoUrl }, "*");
   };
+}
+
+function sendVideoUrlToReact(iframe) {
+  setInterval(() => {
+    const videoUrl = window.location.href;
+    iframe.contentWindow.postMessage({ type: "videoUrl", videoUrl }, "*");
+  }, 1000);
 }
 
 function sendVideoTimeToReact(iframe) {
