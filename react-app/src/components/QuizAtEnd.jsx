@@ -10,6 +10,7 @@ import useGetAllData from "../hooks/useGetAllData";
  * @param {string} selectedAnswer - The selected answer passed from parent, which should be "End"
  * @param {Array} preloadedQuestions - Preloaded questions to use instead of fetching.
  * @param {number} preloadedVideoLength - Preloaded video length to use instead of fetching.
+ * @param {Function} onAnswerChange - Callback function to send selected answer back to parent component.
  * @returns {JSX.Element|null} The rendered component or null if conditions are not met.
  * */
 
@@ -17,6 +18,7 @@ function QuizAtEnd({
   selectedAnswer,
   preloadedQuestions = null,
   preloadedVideoLength = 0,
+  onAnswerChange,
 }) {
   const { questions, hasError, videoLength } = preloadedQuestions
     ? {
@@ -50,6 +52,10 @@ function QuizAtEnd({
   if (hasError || questions.length === 0 || videoLength === 0.0) {
     return null;
   }
+
+  useEffect(() => {
+    onAnswerChange(selectedAnswer);
+  }, [showQuestions]);
 
   return showQuestions ? (
     <div>
