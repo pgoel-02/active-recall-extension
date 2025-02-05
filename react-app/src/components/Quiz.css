@@ -121,3 +121,20 @@
 .quiz-button:disabled {
   cursor: not-allowed;
 }
+
+.close-button {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 5px;
+  line-height: 1;
+}
+
+.close-button:hover {
+  color: #ff6b6b;
+}

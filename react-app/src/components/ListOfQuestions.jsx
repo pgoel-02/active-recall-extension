@@ -14,6 +14,11 @@ const ListOfQuestions = ({ questions }) => {
   const [submitted, setSubmitted] = useState(false);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [answers, setAnswers] = useState([]);
+  const [showQuiz, setShowQuiz] = useState(true);
+
+  if (!showQuiz) {
+    return null;
+  }
 
   const currentQuestion = questions[currentQuestionIndex];
   const { question, options, correct_answer } = currentQuestion;
@@ -69,6 +74,13 @@ const ListOfQuestions = ({ questions }) => {
 
   return (
     <div className="quiz-container">
+      <button
+        className="close-button"
+        onClick={() => setShowQuiz(false)}
+        aria-label="Close Quiz"
+      >
+        ×
+      </button>
       <h4 className="quiz-question">{question}</h4>
 
       <div className="quiz-options">
