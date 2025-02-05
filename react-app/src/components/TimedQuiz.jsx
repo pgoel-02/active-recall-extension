@@ -9,8 +9,8 @@ import QuizAtEnd from "./QuizAtEnd";
  * It manages the state of questions, answers, and timing to show questions at
  * the correct times and allow users to answer before moving on.
  *
- * @param {Object} selectedAnswer - The selected answer passed from parent.
- * @param {Object} testData - The test data containing questions and video length.
+ * @param {string} selectedAnswer - The selected answer passed from parent.
+ * @returns {JSX.Element|null} The rendered component or null if conditions are not met.
  */
 function TimedQuiz({ selectedAnswer }) {
   // Fetching data from custom hook

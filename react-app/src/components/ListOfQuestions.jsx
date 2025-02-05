@@ -2,6 +2,13 @@ import React, { useState } from "react";
 import "./IntroQuestion.css";
 import "./ListOfQuestions.css";
 
+/**
+ * The ListOfQuestions component renders a series of quiz questions with multiple-choice answers.
+ * It allows users to select an answer for each question, submit their answers, and navigate through the quiz.
+ *
+ * @param {Array} questions - The list of questions to be displayed.
+ * @returns {JSX.Element} The rendered component.
+ */
 const ListOfQuestions = ({ questions }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);

@@ -2,6 +2,17 @@ import React, { useState, useEffect } from "react";
 import ListOfQuestions from "./ListOfQuestions";
 import useGetAllData from "../hooks/useGetAllData";
 
+/**
+ * The QuizAtEnd component displays a list of questions at the end of a video.
+ * It listens for video playback events to determine when to show the questions.
+ * It uses a custom hook to fetch questions, if no questions are provided as a prop.
+ *
+ * @param {string} selectedAnswer - The selected answer passed from parent, which should be "End"
+ * @param {Array} preloadedQuestions - Preloaded questions to use instead of fetching.
+ * @param {number} preloadedVideoLength - Preloaded video length to use instead of fetching.
+ * @returns {JSX.Element|null} The rendered component or null if conditions are not met.
+ * */
+
 function QuizAtEnd({
   selectedAnswer,
   preloadedQuestions = null,
