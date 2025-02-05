@@ -50,11 +50,20 @@ const ListOfQuestions = ({ questions }) => {
 
   const getOptionLabelClass = (option) => {
     const baseClass = "option-label";
-    if (quizCompleted || submitted) {
+
+    if (quizCompleted) {
+      const userAnswer = answers[currentQuestionIndex];
+      if (option === correct_answer) return `${baseClass} correct`;
+      if (option === userAnswer && option !== correct_answer)
+        return `${baseClass} incorrect`;
+    }
+
+    if (submitted) {
       if (option === correct_answer) return `${baseClass} correct`;
       if (selectedOption === option && option !== correct_answer)
         return `${baseClass} incorrect`;
     }
+
     return baseClass;
   };
 
