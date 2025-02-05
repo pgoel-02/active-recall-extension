@@ -1,14 +1,3 @@
-const IFRAME_STYLES = {
-  position: "fixed",
-  top: "0",
-  left: "75%",
-  transform: "translateX(-50%)",
-  width: "34%",
-  height: "25%",
-  zIndex: "999999",
-  boxShadow: "0 4px 10px rgba(0, 0, 0, 0.5)",
-};
-
 function sendVideoUrlToReact(iframe) {
   const videoUrl = window.location.href;
   iframe.onload = () => {
@@ -54,9 +43,6 @@ function isAdPlaying() {
   return adOverlay !== null;
 }
 
-let iframeTriggered = false;
-let currentUrl = window.location.href;
-
 function triggerIframePipeline() {
   setTimeout(() => {
     if (!iframeTriggered && !isAdPlaying()) {
@@ -71,6 +57,37 @@ function triggerIframePipeline() {
     }
   }, 1000);
 }
+
+const handlePauses = (event) => {
+  if (event.data.type === "APP_IS_NULL") {
+    const videoElement = document.querySelector("video");
+    if (videoElement && videoElement.paused) {
+      videoElement.play();
+    }
+  }
+
+  if (event.data.type === "APP_IS_NOT_NULL") {
+    const videoElement = document.querySelector("video");
+    if (videoElement && !videoElement.paused) {
+      videoElement.pause();
+    }
+  }
+};
+
+const IFRAME_STYLES = {
+  position: "fixed",
+  top: "0",
+  left: "75%",
+  transform: "translateX(-50%)",
+  width: "34%",
+  height: "25%",
+  zIndex: "999999",
+};
+
+let iframeTriggered = false;
+let currentUrl = window.location.href;
+
+window.addEventListener("message", handlePauses);
 
 setInterval(() => {
   if (window.location.href !== currentUrl) {
