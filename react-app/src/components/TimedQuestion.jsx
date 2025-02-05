@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./TimedQuiz.css";
+import "./Quiz.css";
 
 /**
  * TimedQuestion component represents a single quiz question with options.

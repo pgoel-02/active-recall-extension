@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TimedQuestion from "./TimedQuestion";
-import "./TimedQuiz.css";
+import "./Quiz.css";
 import useGetAllData from "../hooks/useGetAllData";
 import QuizAtEnd from "./QuizAtEnd";
 

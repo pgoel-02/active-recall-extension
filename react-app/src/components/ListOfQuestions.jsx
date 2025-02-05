@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./IntroQuestion.css";
-import "./ListOfQuestions.css";
+import "./Quiz.css";
 
 /**
  * The ListOfQuestions component renders a series of quiz questions with multiple-choice answers.
