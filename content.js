@@ -58,10 +58,23 @@ function triggerIframePipeline() {
   }, 1000);
 }
 
+function hideIframe(iframe) {
+  iframe.style.position = "absolute";
+  iframe.style.left = "-900000px";
+}
+
+function showIframe(iframe) {
+  iframe.style.position = "fixed";
+  iframe.style.left = "75%";
+}
+
 const handlePauses = (event) => {
+  const iframe = document.querySelector("iframe[src='http://localhost:5173']");
+
   if (event.data.type === "APP_IS_NULL") {
     const videoElement = document.querySelector("video");
     if (videoElement && videoElement.paused) {
+      hideIframe(iframe);
       videoElement.play();
     }
   }
@@ -69,6 +82,7 @@ const handlePauses = (event) => {
   if (event.data.type === "APP_IS_NOT_NULL") {
     const videoElement = document.querySelector("video");
     if (videoElement && !videoElement.paused) {
+      showIframe(iframe);
       videoElement.pause();
     }
   }
@@ -82,6 +96,7 @@ const IFRAME_STYLES = {
   width: "34%",
   height: "25%",
   zIndex: "999999",
+  boxShadow: "0 4px 10px rgba(0, 0, 0, 0.5)",
 };
 
 let iframeTriggered = false;
