@@ -72,11 +72,11 @@ const TimedQuestion = ({ question, onSubmit, isAnswered, selectedOption }) => {
         ))}
       </div>
 
-      {/* Display submit button if the question hasn't been answered yet */}
+      {/* Display submit button if the question hasn't been answered yet. */}
       {!isAnswered && (
         <div className="button-container">
           <button
-            className="submit-button quiz-button"
+            className="quiz-button"
             onClick={handleSubmit}
             disabled={!localSelectedOption}
           >

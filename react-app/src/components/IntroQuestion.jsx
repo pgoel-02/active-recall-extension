@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./IntroQuestion.css";
+import "./Quiz.css";
 
 /**
  * The IntroQuestion component renders a prompt asking the user when they would like to be asked questions about the video.
@@ -35,10 +35,12 @@ function IntroQuestion({ onAnswerChange }) {
   }
 
   return (
-    <div className="prompt">
-      <h1>When would you like Retain to ask you questions about the video?</h1>
+    <div className="quiz-container">
+      <h4 className="quiz-question">
+        When would you like Retain to ask you questions about the video?
+      </h4>
       {answers.map((answer) => (
-        <div key={answer.value}>
+        <div key={answer.value} className="quiz-option">
           <label>
             <input
               type="radio"
@@ -46,6 +48,7 @@ function IntroQuestion({ onAnswerChange }) {
               name="initialPrompt"
               onChange={handleAnswerChange}
               checked={selectedAnswer === answer.value}
+              className="option-input"
             />
             {answer.label}
           </label>
@@ -53,13 +56,15 @@ function IntroQuestion({ onAnswerChange }) {
         </div>
       ))}
 
-      <button
-        className="submit-button"
-        onClick={handleSubmit}
-        disabled={!selectedAnswer}
-      >
-        Submit
-      </button>
+      <div className="button-container">
+        <button
+          className="quiz-button"
+          onClick={handleSubmit}
+          disabled={!selectedAnswer}
+        >
+          Submit
+        </button>
+      </div>
     </div>
   );
 }

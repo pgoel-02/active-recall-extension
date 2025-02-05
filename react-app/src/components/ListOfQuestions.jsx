@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./IntroQuestion.css";
 import "./Quiz.css";
 
 /**
@@ -60,7 +59,7 @@ const ListOfQuestions = ({ questions }) => {
   };
 
   return (
-    <div className="prompt quiz-container">
+    <div className="quiz-container">
       <h4 className="quiz-question">{question}</h4>
 
       <div className="quiz-options">
@@ -89,10 +88,7 @@ const ListOfQuestions = ({ questions }) => {
 
       <div className="button-container">
         {quizCompleted && currentQuestionIndex > 0 && (
-          <button
-            className="submit-button quiz-button"
-            onClick={handlePreviousQuestion}
-          >
+          <button className="quiz-button" onClick={handlePreviousQuestion}>
             Previous
           </button>
         )}
@@ -100,7 +96,7 @@ const ListOfQuestions = ({ questions }) => {
         {!quizCompleted &&
           (!submitted ? (
             <button
-              className="submit-button quiz-button"
+              className="quiz-button"
               onClick={handleSubmit}
               disabled={selectedOption === null}
             >
@@ -108,20 +104,14 @@ const ListOfQuestions = ({ questions }) => {
             </button>
           ) : (
             currentQuestionIndex < questions.length - 1 && (
-              <button
-                className="submit-button quiz-button"
-                onClick={handleNextQuestion}
-              >
+              <button className="quiz-button" onClick={handleNextQuestion}>
                 Next Question
               </button>
             )
           ))}
 
         {quizCompleted && currentQuestionIndex < questions.length - 1 && (
-          <button
-            className="submit-button quiz-button"
-            onClick={handleNextQuestion}
-          >
+          <button className="quiz-button" onClick={handleNextQuestion}>
             Next
           </button>
         )}
