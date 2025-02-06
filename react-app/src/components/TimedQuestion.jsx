@@ -47,7 +47,7 @@ const TimedQuestion = ({ question, onSubmit, isAnswered, selectedOption }) => {
   };
 
   return (
-    <div>
+    <>
       <h4 className="quiz-question">{questionText}</h4>
       <div className="quiz-options">
         {options.map((option, index) => (
@@ -84,7 +84,7 @@ const TimedQuestion = ({ question, onSubmit, isAnswered, selectedOption }) => {
           </button>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
