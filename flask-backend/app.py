@@ -1,13 +1,12 @@
 from flask import Flask, request, jsonify
 from generate_transcript import get_transcript 
 from generate_questions import get_questions 
-
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/generate_questions', methods=['POST'])
+@app.route('/generate_questions', methods=['POST', 'OPTIONS'])
 def generate_questions():
     """
     Generates educational questions from a youtube video. 
@@ -28,6 +27,12 @@ def generate_questions():
     If timestamped == True, each dictionary will also include:
     - `timestamp` (float): The time in seconds corresponding to when the topic in a given question is covered in the youtube video.
     """
+    if request.method == 'OPTIONS':
+        response = jsonify({'status': 'OK'})
+        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:5173') 
+        response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+        return response
 
     data = request.json
     video_url = data.get('video_url')
