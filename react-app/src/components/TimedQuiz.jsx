@@ -48,23 +48,23 @@ function TimedQuiz({ selectedAnswer, onAnswerChange }) {
       if (timestamp % 5 === 0) {
         return Math.min(
           Math.ceil(timestamp / 5) * 5 + 5,
-          Math.max(0, videoLength - 1)
+          Math.max(0, videoLength - 3)
         );
       }
       return Math.min(
         Math.ceil(timestamp / 5) * 5,
-        Math.max(0, videoLength - 1)
+        Math.max(0, videoLength - 3)
       );
     } else {
       if (timestamp % 60 === 0) {
         return Math.min(
           Math.ceil(timestamp / 60) * 60 + 60,
-          Math.max(0, videoLength - 1)
+          Math.max(0, videoLength - 3)
         );
       }
       return Math.min(
         Math.ceil(timestamp / 60) * 60,
-        Math.max(0, videoLength - 1)
+        Math.max(0, videoLength - 3)
       );
     }
   };
