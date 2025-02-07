@@ -74,7 +74,11 @@
   border: 2px solid #d1d5db;
   border-radius: 6px;
   width: 18px;
+  min-width: 18px;
+  max-width: 18px;
   height: 18px;
+  min-height: 18px;
+  max-height: 18px;
   display: inline-block;
   vertical-align: middle;
   margin-right: 12px;
