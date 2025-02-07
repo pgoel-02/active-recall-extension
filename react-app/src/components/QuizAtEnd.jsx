@@ -12,8 +12,7 @@ import useGetAllData from "../hooks/useGetAllData";
  * @param {number} preloadedVideoLength - Preloaded video length to use instead of fetching.
  * @param {Function} onAnswerChange - Callback function to send selected answer back to parent component.
  * @returns {JSX.Element|null} The rendered component or null if conditions are not met.
- * */
-
+ */
 function QuizAtEnd({
   selectedAnswer,
   preloadedQuestions = null,
@@ -30,32 +29,31 @@ function QuizAtEnd({
   const [showQuestions, setShowQuestions] = useState(false);
 
   useEffect(() => {
+    onAnswerChange(selectedAnswer);
+  }, [showQuestions]);
+
+  useEffect(() => {
     const handleMessage = (event) => {
       const currentValue = event.data.currentTime;
+      if (currentValue && !showQuestions && videoLength !== 0) {
+        const isVideoEnded =
+          Math.ceil(currentValue) >= Math.ceil(videoLength - 1);
 
-      if (currentValue && !showQuestions & (videoLength != 0)) {
-        const isVideoEnded = Math.ceil(currentValue) >= Math.ceil(videoLength);
-
-        if (isVideoEnded) {
+        if (isVideoEnded && !showQuestions) {
           setShowQuestions(true);
         }
       }
     };
 
     window.addEventListener("message", handleMessage);
-
     return () => {
       window.removeEventListener("message", handleMessage);
     };
-  }, [videoLength]);
+  }, [videoLength, showQuestions]);
 
-  if (hasError || questions.length === 0 || videoLength === 0.0) {
+  if (hasError || !questions || questions.length === 0 || videoLength === 0.0) {
     return null;
   }
-
-  useEffect(() => {
-    onAnswerChange(selectedAnswer);
-  }, [showQuestions]);
 
   return showQuestions ? (
     <div>
