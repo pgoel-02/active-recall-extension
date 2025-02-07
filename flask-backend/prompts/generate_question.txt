@@ -1,13 +1,28 @@
 Generate a multiple-choice question based on the following point:
 "{key_point}"
 
-The question should include:
-1. A clear question.
-2. Four options, with one correct answer and three believable distractors. Order the options in the list randomly and keep options concise.
-3. Indicate which option is correct. The correct option should be based on the given point. 
-4. Please do not assign numbers or letters to each option. 
+Question Generation Guidelines:
+1. Create a clear, precise question that directly tests understanding of the key point. The question should be challenging enough to distinguish between surface-level and deep understanding.
+2. Develop four options with the following characteristics:
+   - One correct answer that is thoroughly grounded in the key point
+   - Three distractors that are:
+     * Plausible at first glance
+     * Closely related to the topic
+     * Constructed to challenge critical thinking
+     * Similar in length and complexity to the correct answer
+   - Ensure distractors are not obviously wrong or easily dismissible
 
-Return the result in a Python dictionary with the following key-value pairs: 
+3. Distractor Creation Strategy:
+   - Incorporate common misconceptions related to the topic
+   - Use subtle variations or partial truths in incorrect options
+   - Ensure distractors require careful consideration
+
+4. Formatting Requirements:
+   - Options should be concise
+   - Avoid absolute terms like "always" or "never" in distractors
+   - Do not assign numbers or letters to options
+
+Return the result in a Python dictionary with these key-value pairs:
 question: "Your question text here",
 options: ["Option A", "Option B", "Option C", "Option D"], 
 correct_answer: "The correct answer from the options list"
