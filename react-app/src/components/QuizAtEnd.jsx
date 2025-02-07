@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import ListOfQuestions from "./ListOfQuestions";
 import useGetAllData from "../hooks/useGetAllData";
 
