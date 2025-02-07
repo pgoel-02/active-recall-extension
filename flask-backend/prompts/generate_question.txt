@@ -18,7 +18,7 @@ Question Generation Guidelines:
    - Ensure distractors require careful consideration
 
 4. Formatting Requirements:
-   - Options should be concise
+   - Each option should be concise, with no more than 12 words
    - Avoid absolute terms like "always" or "never" in distractors
    - Do not assign numbers or letters to options
 
