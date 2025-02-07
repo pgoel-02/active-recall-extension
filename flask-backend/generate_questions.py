@@ -1,6 +1,7 @@
 import re
 import os
 import ast
+import random
 from openai import OpenAI
 client = OpenAI()
 
@@ -282,6 +283,21 @@ def clean_questions(questions, max_questions = 15):
     )
     return completion.choices[0].message.content
 
+def shuffled(questions):
+    """
+    Randomize the order of options for each question using the question's length as a seed.
+
+    Args: 
+    questions (list of dict): A list of dictionaries, each containing a question, options, correct answer, and optionally a timestamp.
+
+    Returns:
+    list of dict: The same input list of dictionaries, with each 'options' list now shuffled
+    """
+    for question in questions:
+        random.seed(len(question['question']))
+        random.shuffle(question['options'])
+    return questions
+
 
 def get_questions(transcript, timestamped):
     """
@@ -315,4 +331,5 @@ def get_questions(transcript, timestamped):
     
     questions = [question for sublist in questions for question in sublist]
     questions = clean_questions(questions)
-    return format_as_list(questions)
+    questions = format_as_list(questions)
+    return shuffled(questions)
