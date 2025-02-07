@@ -17,8 +17,10 @@ function TimedQuiz({ selectedAnswer, onAnswerChange }) {
   const { questions, hasError, videoLength } = hookData;
 
   // Assigns 'ids' to questions
-  if (questions) {
-    questions = questions.map((q, index) => ({
+  let updatedQuestions = questions;
+
+  if (updatedQuestions) {
+    updatedQuestions = updatedQuestions.map((q, index) => ({
       ...q,
       id: `question-${index}`,
     }));
@@ -85,12 +87,12 @@ function TimedQuiz({ selectedAnswer, onAnswerChange }) {
    * It checks if the current time has passed the rounded timestamp for the next question.
    */
   useEffect(() => {
-    if (questions && questions.length > 0 && currentTime > 0) {
+    if (updatedQuestions && updatedQuestions.length > 0 && currentTime > 0) {
       if (activeQuestionIndex === null) {
         const nextQuestionIndex = lastAnsweredIndex + 1;
-        if (nextQuestionIndex < questions.length) {
+        if (nextQuestionIndex < updatedQuestions.length) {
           const roundedTimestamp = roundTimestamp(
-            questions[nextQuestionIndex].timestamp
+            updatedQuestions[nextQuestionIndex].timestamp
           );
           if (currentTime >= roundedTimestamp) {
             setActiveQuestionIndex(nextQuestionIndex);
@@ -98,11 +100,11 @@ function TimedQuiz({ selectedAnswer, onAnswerChange }) {
             setCanGenerateAtEnd(false);
           }
         }
-      } else if (answeredQuestions[questions[activeQuestionIndex].id]) {
+      } else if (answeredQuestions[updatedQuestions[activeQuestionIndex].id]) {
         const nextIndex = activeQuestionIndex + 1;
-        if (nextIndex < questions.length) {
+        if (nextIndex < updatedQuestions.length) {
           const roundedNextTimestamp = roundTimestamp(
-            questions[nextIndex].timestamp
+            updatedQuestions[nextIndex].timestamp
           );
           if (currentTime >= roundedNextTimestamp) {
             setCanMoveToNext(true);
@@ -114,7 +116,7 @@ function TimedQuiz({ selectedAnswer, onAnswerChange }) {
     }
   }, [
     currentTime,
-    questions,
+    updatedQuestions,
     activeQuestionIndex,
     answeredQuestions,
     videoLength,
@@ -133,16 +135,16 @@ function TimedQuiz({ selectedAnswer, onAnswerChange }) {
       ...prev,
       [questionId]: selectedOption,
     }));
-    if (lastAnsweredIndex + 1 < questions.length) {
+    if (lastAnsweredIndex + 1 < updatedQuestions.length) {
       setLastAnsweredIndex(lastAnsweredIndex + 1);
     }
   };
 
   // Checks if all questions have been answered
   const allQuestionsAnswered =
-    questions &&
-    questions.length > 0 &&
-    questions.every((q) => answeredQuestions[q.id]);
+    updatedQuestions &&
+    updatedQuestions.length > 0 &&
+    updatedQuestions.every((q) => answeredQuestions[q.id]);
 
   // Effect hook to check whether all questions have been answered and we should generate questions once again at the end of the video
   useEffect(() => {
@@ -155,7 +157,7 @@ function TimedQuiz({ selectedAnswer, onAnswerChange }) {
   // Handles moving to the next question when the "Next" button is clicked.
   const handleNextQuestion = () => {
     const nextIndex = activeQuestionIndex + 1;
-    if (nextIndex < questions.length) {
+    if (nextIndex < updatedQuestions.length) {
       setActiveQuestionIndex(nextIndex);
       setCanMoveToNext(false);
     }
@@ -166,8 +168,8 @@ function TimedQuiz({ selectedAnswer, onAnswerChange }) {
     if (
       isQuizHidden ||
       hasError ||
-      !questions ||
-      questions.length === 0 ||
+      !updatedQuestions ||
+      updatedQuestions.length === 0 ||
       videoLength === 0.0
     ) {
       onAnswerChange(selectedAnswer);
@@ -175,7 +177,7 @@ function TimedQuiz({ selectedAnswer, onAnswerChange }) {
   }, [
     isQuizHidden,
     hasError,
-    questions,
+    updatedQuestions,
     videoLength,
     selectedAnswer,
     onAnswerChange,
@@ -185,8 +187,8 @@ function TimedQuiz({ selectedAnswer, onAnswerChange }) {
   if (
     isQuizHidden ||
     hasError ||
-    !questions ||
-    questions.length === 0 ||
+    !updatedQuestions ||
+    updatedQuestions.length === 0 ||
     videoLength === 0.0
   ) {
     return null;
@@ -198,8 +200,8 @@ function TimedQuiz({ selectedAnswer, onAnswerChange }) {
    * there are multiple questions, and the user can move to the next question.
    */
   const hasNextButton =
-    questions.length > 1 &&
-    answeredQuestions[questions[activeQuestionIndex]?.id] &&
+    updatedQuestions.length > 1 &&
+    answeredQuestions[updatedQuestions[activeQuestionIndex]?.id] &&
     canMoveToNext;
 
   if (activeQuestionIndex != null) {
@@ -215,14 +217,14 @@ function TimedQuiz({ selectedAnswer, onAnswerChange }) {
 
   // Checks if the current question has been answered
   const currentQuestionAnswered =
-    answeredQuestions[questions[activeQuestionIndex]?.id];
+    answeredQuestions[updatedQuestions[activeQuestionIndex]?.id];
 
   return (
     <>
       {showQuizAtEnd ? (
         <QuizAtEnd
           selectedAnswer={selectedAnswer}
-          preloadedQuestions={questions}
+          preloadedQuestions={updatedQuestions}
           preloadedVideoLength={videoLength}
           onAnswerChange={onAnswerChange}
         />
@@ -240,11 +242,13 @@ function TimedQuiz({ selectedAnswer, onAnswerChange }) {
           {/* Render question panel and current question */}
           {activeQuestionIndex !== null && (
             <TimedQuestion
-              question={questions[activeQuestionIndex]}
+              question={updatedQuestions[activeQuestionIndex]}
               onSubmit={handleAnswerSubmit}
-              isAnswered={answeredQuestions[questions[activeQuestionIndex].id]}
+              isAnswered={
+                answeredQuestions[updatedQuestions[activeQuestionIndex].id]
+              }
               selectedOption={
-                answeredQuestions[questions[activeQuestionIndex].id]
+                answeredQuestions[updatedQuestions[activeQuestionIndex].id]
               }
             />
           )}
