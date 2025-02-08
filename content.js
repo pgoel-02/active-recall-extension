@@ -74,7 +74,7 @@ const handlePauses = (event) => {
 
   if (event.data.type === "APP_IS_NULL") {
     const videoElement = document.querySelector("video");
-    if (videoElement && videoElement.paused) {
+    if (videoElement && videoElement.paused && !videoElement.ended) {
       hideIframe(iframe);
       videoElement.play();
     }
