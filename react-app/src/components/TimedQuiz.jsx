@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import TimedQuestion from "./TimedQuestion";
 import useGetAllData from "../hooks/useGetAllData";
 import QuizAtEnd from "./QuizAtEnd";
@@ -48,23 +48,23 @@ function TimedQuiz({ selectedAnswer, onAnswerChange }) {
       if (timestamp % 5 === 0) {
         return Math.min(
           Math.ceil(timestamp / 5) * 5 + 5,
-          Math.max(0, videoLength - 3)
+          Math.max(0, videoLength - 10)
         );
       }
       return Math.min(
         Math.ceil(timestamp / 5) * 5,
-        Math.max(0, videoLength - 3)
+        Math.max(0, videoLength - 10)
       );
     } else {
       if (timestamp % 60 === 0) {
         return Math.min(
           Math.ceil(timestamp / 60) * 60 + 60,
-          Math.max(0, videoLength - 3)
+          Math.max(0, videoLength - 10)
         );
       }
       return Math.min(
         Math.ceil(timestamp / 60) * 60,
-        Math.max(0, videoLength - 3)
+        Math.max(0, videoLength - 10)
       );
     }
   };
