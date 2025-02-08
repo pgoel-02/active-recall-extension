@@ -21,6 +21,26 @@ function sendVideoTimeToReact(iframe) {
     }, 1000);
   }
 }
+
+// Sends 'True' to React app if the video has ended.
+function sendIsVideoEndedToReact(iframe) {
+  const videoElement = document.querySelector("video");
+
+  if (videoElement) {
+    setInterval(() => {
+      if (videoElement.ended) {
+        iframe.contentWindow.postMessage(
+          {
+            type: "videoEnded",
+            ended: true,
+          },
+          "*"
+        );
+      }
+    }, 1000);
+  }
+}
+
 // Sends the video's duration to the React app in the iframe.
 function sendVideoDuration(iframe) {
   const video = document.querySelector("video");
@@ -52,6 +72,7 @@ function triggerIframePipeline() {
       sendVideoDuration(iframe);
       sendVideoUrlToReact(iframe);
       sendVideoTimeToReact(iframe);
+      sendIsVideoEndedToReact(iframe);
     }
   }, 1000);
 }
@@ -82,10 +103,10 @@ const handlePauses = (event) => {
 
   if (event.data.type === "APP_IS_NOT_NULL") {
     const videoElement = document.querySelector("video");
-    if (videoElement && !videoElement.paused) {
-      showIframe(iframe);
+    if (!videoElement.paused) {
       videoElement.pause();
     }
+    showIframe(iframe);
   }
 };
 

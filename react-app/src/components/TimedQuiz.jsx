@@ -225,7 +225,6 @@ function TimedQuiz({ selectedAnswer, onAnswerChange }) {
         <QuizAtEnd
           selectedAnswer={selectedAnswer}
           preloadedQuestions={updatedQuestions}
-          preloadedVideoLength={videoLength}
           onAnswerChange={onAnswerChange}
         />
       ) : (
