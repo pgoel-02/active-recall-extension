@@ -1,33 +1,38 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import IntroQuestion from "./components/IntroQuestion";
 import TimedQuiz from "./components/TimedQuiz";
 import QuizAtEnd from "./components/QuizAtEnd";
 
+function postMessageBasedOnAnswerChange() {
+  const rootElement = document.getElementById("root");
+  const quizContainer = document.querySelector(".quiz-container");
+
+  if (
+    rootElement &&
+    (rootElement.children.length === 0 ||
+      (rootElement.firstChild &&
+        rootElement.firstChild.childElementCount === 0) ||
+      (quizContainer && quizContainer.childElementCount === 0))
+  ) {
+    window.parent.postMessage({ type: "APP_IS_NULL" }, "*");
+  } else {
+    window.parent.postMessage({ type: "APP_IS_NOT_NULL" }, "*");
+  }
+}
+
 function App() {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
 
-  const handleAnswerChange = (answer) => {
+  const handleAnswerChange = useCallback((answer) => {
+    postMessageBasedOnAnswerChange();
     setSelectedAnswer(answer);
-  };
+  }, []);
 
-  // Effect sends a message to the parent window to indicate when the current video should be paused vs. unpaused
-  // 'APP_IS_NULL' means that the app is not currently asking/presenting questions, so the video should be unpaused/playing
-  // 'APP_IS_NOT_NULL' means that the app is currently asking/presenting questions, so the video should be paused
   useEffect(() => {
-    const rootElement = document.getElementById("root");
-    if (
-      rootElement &&
-      (rootElement.children.length === 0 ||
-        (rootElement.firstChild &&
-          rootElement.firstChild.childElementCount === 0))
-    ) {
-      window.parent.postMessage({ type: "APP_IS_NULL" }, "*");
-    } else {
-      window.parent.postMessage({ type: "APP_IS_NOT_NULL" }, "*");
-    }
-  }, [selectedAnswer]);
+    postMessageBasedOnAnswerChange();
+  }, []);
 
   return (
     <StrictMode>
@@ -35,9 +40,15 @@ function App() {
         {!selectedAnswer ? (
           <IntroQuestion onAnswerChange={handleAnswerChange} />
         ) : selectedAnswer === "End" ? (
-          <QuizAtEnd selectedAnswer={selectedAnswer} />
+          <QuizAtEnd
+            selectedAnswer={selectedAnswer}
+            onAnswerChange={handleAnswerChange}
+          />
         ) : (
-          <TimedQuiz selectedAnswer={selectedAnswer} />
+          <TimedQuiz
+            selectedAnswer={selectedAnswer}
+            onAnswerChange={handleAnswerChange}
+          />
         )}
       </div>
     </StrictMode>
